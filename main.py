@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 from openpyxl import load_workbook
-import sys, matplotlib.pyplot as plt, matplotlib.patches as mpatches, numpy as np
+import sys, matplotlib.pyplot as plt, matplotlib.patches as mpatches, numpy as np, matplotlib.pyplot as mpl
 
 def printPoints(sheet, firstRow, firstCol, lastCol, maxClubs, gamesPlayed):
+    pointsNew = [None] * gamesPlayed
+    rangePoints = [None] * gamesPlayed
     for row in range(firstRow, maxClubs + firstRow):
         for value in sheet.iter_rows(min_row = row, max_row = row, min_col = firstCol,
                                     max_col = lastCol , values_only = True):
@@ -12,20 +14,38 @@ def printPoints(sheet, firstRow, firstCol, lastCol, maxClubs, gamesPlayed):
                 points = value[0:gamesPlayed]
 
             print(points)
-            plot(points)
+            checkGames(gamesPlayed)
+            createLists(points, pointsNew, rangePoints, gamesPlayed)
+            createGraphic(pointsNew, rangePoints, gamesPlayed)
 
-def plot(points):
-    points = [3.0, 0, 0.25, 0.5, 0, 0.25, 3.0, 1.0, 2.5, 2, 3.0, 0, 0, 0.75, 3.0, 1.0, 0.25, 0.5, 0, 0.25, 3.0, 1.0, 3.0, 0, 0, 0.75, 3.0, 1.0, 0.25, 3.0, 1.0, 0.5, 2.5, 0.5, 0, 0, 0.75, 3.0]
-    range = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]
-    #fig = plt.figure(num = None, figsize = (80, 3), dpi=80, facecolor = 'w', edgecolor = 'k')
-    fig, ax = plt.subplots()
-    fig.set_size_inches(10, 2.5)
-    ax.scatter(range, points, color = 'b')
-    ax.plot(range, points)
-    ax.set_ylabel('Puntuación', fontweight = 'bold')
-    ax.set_xlabel('Jornadas', fontweight = 'bold')
-    ax.grid(True)
-    ax.set_title('Club\n', fontsize = 14, fontweight = 'bold')
+def checkGames(gamesPlayed):
+    if gamesPlayed == 1:
+        print("Games played is equal to one, can't graphic it")
+        sys.exit(1)
+
+def createLists(points, pointsNew, rangePoints, gamesPlayed):
+    temp = 0
+    for i in range(0, gamesPlayed):
+        pointsNew[i] = points[i] - 1.5 + temp
+        temp = pointsNew[i]
+    for j in range(1, gamesPlayed + 1):
+        rangePoints[j - 1] = j
+
+def createGraphic(pointsNew, rangePoints, gamesPlayed):
+
+    mpl.rcParams['toolbar'] = 'None'
+    fig, ax = plt.subplots(figsize = (10, 2))
+    fig.tight_layout()
+    fig.patch.set_facecolor('xkcd:gray')
+    ax.scatter(rangePoints, pointsNew, color = 'b')
+    ax.plot(rangePoints, pointsNew, color = 'k')
+    ax.set_xlim(0, gamesPlayed)
+    ax.set_facecolor('xkcd:gray')
+    ax.set_yticklabels([])
+    ax.set_ylabel('Puntuación', fontsize = 10)
+    ax.set_xlabel('Jornadas', fontsize = 10)
+    ax.set_title('Club\n')
+    ax.grid(linestyle = '--', linewidth = 0.5)
     plt.show()
 
 def main():
@@ -46,7 +66,6 @@ def main():
     printPoints(sheet, firstRowSantander, firstCol, lastCol, maxClubsSantander, gamesPlayed)
     print("\nLiga Smartbank")
     printPoints(sheet, firstRowSmartbank, firstCol, lastCol, maxClubsSmartbank, gamesPlayed)
-
 
 if __name__ == "__main__":
     main()
