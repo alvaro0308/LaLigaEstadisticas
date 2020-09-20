@@ -1,7 +1,39 @@
 #!/usr/bin/env python3
 
+# Filename: LaLigaEstadisticas.py
+
+""" """
+
 from openpyxl import load_workbook
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
+from PyQt5.QtWidgets import QMainWindow
+
 import sys, matplotlib.pyplot as plt, matplotlib.patches as mpatches, numpy as np, matplotlib.pyplot as mpl
+
+# Import QApplication and the required widgets from PyQt5.QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QFormLayout
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialogButtonBox
+from PyQt5.QtWidgets import QFormLayout
+from PyQt5.QtWidgets import QStatusBar
+from PyQt5.QtWidgets import QToolBar
+import functools
+
+__version__ = "alpha"
+__author__ = "Álvaro"
+
+ERROR_MSG = "ERROR"
+
 
 def printPoints(sheet, firstRow, firstCol, lastCol, maxClubs, gamesPlayed):
     pointsNew = [None] * gamesPlayed
@@ -68,5 +100,31 @@ def main():
     print("\nLiga Smartbank")
     printPoints(sheet, firstRowSmartbank, firstCol, lastCol, maxClubsSmartbank, gamesPlayed)
 
+class PyCalcUi(QMainWindow):
+    """PyCalc's View (GUI)."""
+    def __init__(self):
+        """View initializer."""
+        super().__init__()
+        # Set some main window's properties
+        self.setWindowTitle('PyCalc')
+        self.setFixedSize(235, 235)
+        # Set the central widget
+        self._centralWidget = QWidget(self)
+        self.setCentralWidget(self._centralWidget)
+
 if __name__ == '__main__':
-    main()
+    #main()
+    # appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
+    # window = QMainWindow()
+    # window.resize(1000, 200)
+    # window.show()
+    # exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
+    # sys.exit(exit_code)
+    """Main function."""
+    # Create an instance of QApplication
+    pycalc = QApplication(sys.argv)
+    # Show the calculator's GUI
+    view = PyCalcUi()
+    view.show()
+    # Execute the calculator's main loop
+    sys.exit(pycalc.exec_())
