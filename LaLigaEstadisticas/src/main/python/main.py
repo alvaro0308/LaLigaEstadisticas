@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Filename: LaLigaEstadisticas.py
+# Filename: AppUI.py
 
 """ """
 
@@ -101,27 +101,49 @@ def main():
     print("\nLiga Smartbank")
     printPoints(sheet, firstRowSmartbank, firstCol, lastCol, maxClubsSmartbank, gamesPlayed)
 
-class Menu(QWidget):
-   def __init__(self, parent = None):
-      super(Menu, self).__init__(parent)
+class AppUI(QMainWindow):
+   def __init__(self):
+      super().__init__()
+      self.setFixedSize(1000, 200)
+      self.generalLayout = QHBoxLayout()
+      self._centralWidget = QWidget(self)
+      self.setCentralWidget(self._centralWidget)
+      self._centralWidget.setLayout(self.generalLayout)
+      self._createBox()
+      self._connectSignals()
 
-      layout = QHBoxLayout()
-      self.cb = QComboBox()
-      self.cb.addItems(["Liga Santander", "Liga Smartbank"])
-      self.cb.currentIndexChanged.connect(self.selectionchange)
+   def _createBox(self):
+      self._box = QComboBox()
+      self._box.addItems(["Seleccione un campeonato", "Liga Santander", "Liga Smartbank"])
+      self.setWindowTitle("LaLigaEstadisticas")
+      self.generalLayout.addWidget(self._box)
 
-      layout.addWidget(self.cb)
-      self.setLayout(layout)
-      self.setWindowTitle("Menu Ligas")
+   def _connectSignals(self):
+      self._box.currentIndexChanged.connect(self._printBox)
 
-   def selectionchange(self,i):
-      for count in range(self.cb.count()):
-         print(self.cb.itemText(count))
-      print("Current index", i, "selection changed ", self.cb.currentText())
+   def _printBox(self):
+      if self._box.currentText() != "Seleccione un campeonato":
+          print("Campeonato seleccionado: ", self._box.currentText())
+
+# Client code
+def main2():
+    """Main function."""
+    # Create an instance of `QApplication`
+    LaLiga = QApplication(sys.argv)
+    # Show the calculator's GUI
+    view = AppUI()
+    view.show()
+    # Create instances of the model and the controller
+    # model = evaluateExpression
+    # AppCtrl(view = view)
+    # Execute calculator's main loop
+    sys.exit(LaLiga.exec_())
 
 if __name__ == '__main__':
-    #main()
-    app = QApplication(sys.argv)
-    window = Menu()
+    main2()
+    appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
+    window = QMainWindow()
+    window.resize(2500, 150)
     window.show()
-    sys.exit(app.exec_())
+    exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
+    sys.exit(exit_code)
