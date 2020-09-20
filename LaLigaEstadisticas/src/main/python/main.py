@@ -27,6 +27,7 @@ from PyQt5.QtWidgets import QDialogButtonBox
 from PyQt5.QtWidgets import QFormLayout
 from PyQt5.QtWidgets import QStatusBar
 from PyQt5.QtWidgets import QToolBar
+from PyQt5.QtWidgets import QComboBox
 import functools
 
 __version__ = "alpha"
@@ -100,31 +101,27 @@ def main():
     print("\nLiga Smartbank")
     printPoints(sheet, firstRowSmartbank, firstCol, lastCol, maxClubsSmartbank, gamesPlayed)
 
-class PyCalcUi(QMainWindow):
-    """PyCalc's View (GUI)."""
-    def __init__(self):
-        """View initializer."""
-        super().__init__()
-        # Set some main window's properties
-        self.setWindowTitle('PyCalc')
-        self.setFixedSize(235, 235)
-        # Set the central widget
-        self._centralWidget = QWidget(self)
-        self.setCentralWidget(self._centralWidget)
+class Menu(QWidget):
+   def __init__(self, parent = None):
+      super(Menu, self).__init__(parent)
+
+      layout = QHBoxLayout()
+      self.cb = QComboBox()
+      self.cb.addItems(["Liga Santander", "Liga Smartbank"])
+      self.cb.currentIndexChanged.connect(self.selectionchange)
+
+      layout.addWidget(self.cb)
+      self.setLayout(layout)
+      self.setWindowTitle("Menu Ligas")
+
+   def selectionchange(self,i):
+      for count in range(self.cb.count()):
+         print(self.cb.itemText(count))
+      print("Current index", i, "selection changed ", self.cb.currentText())
 
 if __name__ == '__main__':
     #main()
-    # appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
-    # window = QMainWindow()
-    # window.resize(1000, 200)
-    # window.show()
-    # exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
-    # sys.exit(exit_code)
-    """Main function."""
-    # Create an instance of QApplication
-    pycalc = QApplication(sys.argv)
-    # Show the calculator's GUI
-    view = PyCalcUi()
-    view.show()
-    # Execute the calculator's main loop
-    sys.exit(pycalc.exec_())
+    app = QApplication(sys.argv)
+    window = Menu()
+    window.show()
+    sys.exit(app.exec_())

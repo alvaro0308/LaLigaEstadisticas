@@ -33,7 +33,6 @@ __author__ = "Leodanis Pozo Ramos"
 
 ERROR_MSG = "ERROR"
 
-
 # Create a subclass of QMainWindow to setup the calculator's GUI
 class PyCalcUi(QMainWindow):
     """PyCalc's View (GUI)."""
@@ -112,7 +111,6 @@ class PyCalcUi(QMainWindow):
         """Clear the display."""
         self.setDisplayText("")
 
-
 # Create a Model to handle the calculator's operation
 def evaluateExpression(expression):
     """Evaluate an expression."""
@@ -122,7 +120,6 @@ def evaluateExpression(expression):
         result = ERROR_MSG
 
     return result
-
 
 # Create a Controller class to connect the GUI and the model
 class PyCalcCtrl:
@@ -157,7 +154,6 @@ class PyCalcCtrl:
         self._view.buttons["="].clicked.connect(self._calculateResult)
         self._view.display.returnPressed.connect(self._calculateResult)
         self._view.buttons["C"].clicked.connect(self._view.clearDisplay)
-
 
 # Client code
 def main():
