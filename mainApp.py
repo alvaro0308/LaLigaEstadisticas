@@ -15,15 +15,13 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QMainWindow
 from functools import partial
-from openpyxl import load_workbook
-import sys, matplotlib.pyplot as plt, matplotlib.patches as mpatches, numpy as np, matplotlib.pyplot as mpl
+import sys
 
 # Import QApplication and the required widgets from PyQt5.QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QWidget
@@ -34,6 +32,8 @@ __author__ = "Leodanis Pozo Ramos"
 ERROR_MSG = "ERROR"
 
 # Create a subclass of QMainWindow to setup the calculator's GUI
+
+
 class PyCalcUi(QMainWindow):
     """PyCalc's View (GUI)."""
 
@@ -112,6 +112,8 @@ class PyCalcUi(QMainWindow):
         self.setDisplayText("")
 
 # Create a Model to handle the calculator's operation
+
+
 def evaluateExpression(expression):
     """Evaluate an expression."""
     try:
@@ -122,11 +124,13 @@ def evaluateExpression(expression):
     return result
 
 # Create a Controller class to connect the GUI and the model
+
+
 class PyCalcCtrl:
     """PyCalc's Controller."""
 
     def __init__(self, model, view):
-        """Controller initializer."""
+        """Control initializer."""
         self._evaluate = model
         self._view = view
         # Connect signals and slots
@@ -156,8 +160,10 @@ class PyCalcCtrl:
         self._view.buttons["C"].clicked.connect(self._view.clearDisplay)
 
 # Client code
+
+
 def main():
-    """Main function."""
+    """Mainn function."""
     # Create an instance of `QApplication`
     pycalc = QApplication(sys.argv)
     # Show the calculator's GUI
@@ -168,6 +174,7 @@ def main():
     PyCalcCtrl(model=model, view=view)
     # Execute calculator's main loop
     sys.exit(pycalc.exec_())
+
 
 if __name__ == '__main__':
     main()
