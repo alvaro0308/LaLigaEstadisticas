@@ -2,32 +2,40 @@
 
 from PyQt5.QtWidgets import QRadioButton
 from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QToolBar
+from PyQt5 import QtCore
 import sip
+
+from GraphicExcel import GraphicExcel
 
 
 class AppUI(QMainWindow):
     """Este es el docstring de la funcion."""
 
-    def __init__(self, listClubsSantander, listClubsSmartbank):
+    def __init__(self, sheet, listClubsSantander, listClubsSmartbank):
         """Este es el docstring de la funcion."""
         super().__init__()
         self.listSantander = listClubsSantander
         self.listSmartbank = listClubsSmartbank
         self.setFixedSize(1000, 1000)
+        self.layout = QVBoxLayout()
 
-        self.generalLayout = QHBoxLayout()
-        self._centralWidget = QWidget()
-        self.setCentralWidget(self._centralWidget)
-        self._centralWidget.setLayout(self.generalLayout)
+        _centralWidget = QWidget()
+        _centralWidget.setLayout(self.layout)
+        self.setCentralWidget(_centralWidget)
 
         toolbar = QToolBar("Main")
         self.addToolBar(toolbar)
         self.currencyList = QComboBox()
+
+        sc = GraphicExcel(sheet)
+        #sc.axes.plot([0, 1, 2, 3, 4], [10, 1, 20, 3, 40])
+        self.layout.addWidget(sc)
 
         self._createBox()
         self._connectSignals()
@@ -38,10 +46,11 @@ class AppUI(QMainWindow):
     def _createBox(self):
         """Este es el docstring de la funcion."""
         self._box = QComboBox()
+        self._box.InsertAtTop
         self._box.addItems(["Seleccione un campeonato",
                             "Liga Santander", "Liga Smartbank"])
         self.setWindowTitle("LaLigaEstadisticas")
-        self.generalLayout.addWidget(self._box)
+        self.layout.addWidget(self._box)
 
     def _createRadioButton(self):
         """Este es el docstring de la funcion."""
@@ -73,13 +82,13 @@ class AppUI(QMainWindow):
         # Create the buttons and add them to the grid layout
         for btnText, pos in self.radioButtons.items():
             self.radioButtons[btnText] = QRadioButton(btnText)
-            self.radioButtons[btnText].setFixedSize(130, 20)
+            self.radioButtons[btnText].setFixedSize(140, 90)
             self.radioButtons[btnText].setChecked(False)
             radioButtonsLayout.addWidget(self.radioButtons[btnText],
                                          pos[0], pos[1])
             # self._radioButton.toggled.connect(lambda:
             #                                   self.btnstate(self._radioButton))
-        self.generalLayout.addLayout(radioButtonsLayout)
+        self.layout.addLayout(radioButtonsLayout)
         self._radioButtonState = True
 
     def _createRadioButton2(self):
@@ -112,13 +121,13 @@ class AppUI(QMainWindow):
         # Create the buttons and add them to the grid layout
         for btnText, pos in self.radioButtons2.items():
             self.radioButtons2[btnText] = QRadioButton(btnText)
-            self.radioButtons2[btnText].setFixedSize(120, 20)
+            self.radioButtons2[btnText].setFixedSize(140, 90)
             self.radioButtons2[btnText].setChecked(False)
             radioButtons2Layout.addWidget(self.radioButtons2[btnText],
                                           pos[0], pos[1])
             # self._radioButton.toggled.connect(lambda:
             #                                   self.btnstate(self._radioButton))
-        self.generalLayout.addLayout(radioButtons2Layout)
+        self.layout.addLayout(radioButtons2Layout)
         self._radioButton2State = True
 
     def _clearRadioButtons(self):

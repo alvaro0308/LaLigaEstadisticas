@@ -21,7 +21,10 @@ from PyQt5.QtWidgets import QMainWindow
 import sys
 from functools import partial
 from openpyxl import load_workbook
-import sys, matplotlib.pyplot as plt, matplotlib.patches as mpatches, numpy as np, matplotlib.pyplot as mpl
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import numpy as np
+import matplotlib.pyplot as mpl
 
 # Import QApplication and the required widgets from PyQt5.QtWidgets
 from PyQt5.QtCore import Qt
@@ -177,6 +180,7 @@ def main():
     PyCalcCtrl(model=model, view=view)
     # Execute calculator's main loop
     sys.exit(pycalc.exec_())
+
 
 if __name__ == '__main__':
     main()
