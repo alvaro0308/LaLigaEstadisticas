@@ -14,8 +14,6 @@ from PyQt5.QtCore import Qt
 __version__ = "alpha"
 __author__ = "Álvaro"
 
-ERROR_MSG = "ERROR"
-
 
 def readClubs(listClubs, maxClubs, firstRow, sheet):
     """."""
@@ -58,7 +56,6 @@ def main():
     firstRowSmartbank = 25
     firstCol = 7
     lastCol = 44
-
     gamesPlayed = 38
 
     listClubsSantander = []
@@ -67,13 +64,6 @@ def main():
               firstRowSantander, sheet)
     readClubs(listClubsSmartbank, maxClubsSmartbank,
               firstRowSmartbank, sheet)
-
-    # print("Liga Santander")
-    # printPoints(sheet, firstRowSantander, firstCol,
-    #             lastCol, maxClubsSantander, gamesPlayed)
-    # print("\nLiga Smartbank")
-    # printPoints(sheet, firstRowSmartbank, firstCol,
-    #             lastCol, maxClubsSmartbank, gamesPlayed)
 
     app = QApplication(sys.argv)
     darkMode(app)

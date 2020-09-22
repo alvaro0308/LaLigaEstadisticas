@@ -1,4 +1,4 @@
-"""Graphic."""
+"""GraphicExcel.py."""
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -7,42 +7,55 @@ import sys
 
 
 class GraphicExcel(FigureCanvasQTAgg):
-    def __init__(self, sheet):
-        # fig = Figure(figsize=(5, 4), dpi=100)
-        # self.axes = fig.add_subplot(111)
-        # super(GraphicExcel, self).__init__(fig)
+    def __init__(self, sheet, club):
         maxClubsSantander = 20
         maxClubsSmartbank = 22
         firstRowSantander = 3
         firstRowSmartbank = 25
         firstCol = 7
         lastCol = 44
-
         gamesPlayed = 38
+        self.sheet = sheet
 
-        print("Liga Santander")
-        fig = self.printPoints(sheet, firstRowSantander, firstCol,
-                               lastCol, maxClubsSantander, gamesPlayed)
-
+        fig = self.printPointsClub(firstRowSantander, firstCol,
+                                   lastCol, maxClubsSantander,
+                                   gamesPlayed, club)
         super(GraphicExcel, self).__init__(fig)
 
-    def printPoints(self, sheet, firstRow, firstCol, lastCol, maxClubs, gamesPlayed):
+    def getRowClub(self, club, firstRow, maxClubs):
+        """."""
+        rowClub = firstRow
+        for value in self.sheet.iter_rows(min_row=firstRow,
+                                          max_row=firstRow + maxClubs - 1,
+                                          min_col=5,
+                                          max_col=5,
+                                          values_only=True):
+            if club == value[0]:
+                return rowClub
+            rowClub += 1
+
+        return -1
+
+    def printPointsClub(self, firstRow, firstCol,
+                        lastCol, maxClubs, gamesPlayed, club):
         """Print points clubs."""
         pointsNew = [None] * gamesPlayed
         rangePoints = [None] * gamesPlayed
-        for row in range(firstRow, maxClubs + firstRow):
-            for value in sheet.iter_rows(min_row=row, max_row=row,
-                                         min_col=firstCol, max_col=lastCol,
-                                         values_only=True):
-                if gamesPlayed == 1:
-                    points = value[0]
-                else:
-                    points = value[0:gamesPlayed]
+        self.checkGames(gamesPlayed)
+        rowClub = self.getRowClub(club, firstRow, maxClubs)
 
-                # print(points)
-                self.checkGames(gamesPlayed)
-                self.createLists(points, pointsNew, rangePoints, gamesPlayed)
-                fig = self.createGraphic(pointsNew, rangePoints, gamesPlayed)
+        for value in self.sheet.iter_rows(min_row=rowClub, max_row=rowClub,
+                                          min_col=firstCol,
+                                          max_col=lastCol,
+                                          values_only=True):
+            if gamesPlayed == 1:
+                points = value[0]
+            else:
+                points = value[0:gamesPlayed]
+
+        print(points)
+        self.createLists(points, pointsNew, rangePoints, gamesPlayed)
+        fig = self.createGraphic(pointsNew, rangePoints, gamesPlayed)
 
         return fig
 
@@ -54,8 +67,8 @@ class GraphicExcel(FigureCanvasQTAgg):
 
     def createLists(self, points, pointsNew, rangePoints, gamesPlayed):
         """Create lists points and range."""
-        points = [3.0, 1.0, 0.25, 0.5, 3.0, 0.25, 3.0, 1.0, 2.5, 2, 3.0, 0, 0, 0.75, 3.0, 1.0, 0.25, 0.5,
-                  0, 0.25, 3.0, 1.0, 3.0, 0, 0, 0.75, 3.0, 1.0, 0.25, 3.0, 1.0, 0.5, 2.5, 0.5, 0, 0, 0.75, 3.0]
+        # points = [3.0, 0, 0.25, 0.5, 0, 0.25, 3.0, 1.0, 2.5, 2, 3.0, 0, 0, 0.75, 3.0, 1.0, 0.25, 0.5,
+        #           0, 0.25, 3.0, 1.0, 3.0, 0, 0, 0.75, 3.0, 1.0, 0.25, 3.0, 1.0, 0.5, 2.5, 0.5, 0, 0, 0.75, 3.0]
         temp = 0
         for i in range(0, gamesPlayed):
             pointsNew[i] = points[i] - 1.5 + temp

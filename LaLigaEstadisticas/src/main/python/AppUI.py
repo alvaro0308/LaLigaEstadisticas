@@ -8,10 +8,14 @@ from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QToolBar
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
-import sip
-
+from functools import partial
 from GraphicExcel import GraphicExcel
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import sip
 
 
 class AppUI(QMainWindow):
@@ -22,20 +26,14 @@ class AppUI(QMainWindow):
         super().__init__()
         self.listSantander = listClubsSantander
         self.listSmartbank = listClubsSmartbank
-        self.setFixedSize(1000, 1000)
+        self.showMaximized()
+        # self.setFixedSize()
         self.layout = QVBoxLayout()
+        self.sheet = sheet
 
         _centralWidget = QWidget()
         _centralWidget.setLayout(self.layout)
         self.setCentralWidget(_centralWidget)
-
-        toolbar = QToolBar("Main")
-        self.addToolBar(toolbar)
-        self.currencyList = QComboBox()
-
-        sc = GraphicExcel(sheet)
-        #sc.axes.plot([0, 1, 2, 3, 4], [10, 1, 20, 3, 40])
-        self.layout.addWidget(sc)
 
         self._createBox()
         self._connectSignals()
@@ -86,8 +84,11 @@ class AppUI(QMainWindow):
             self.radioButtons[btnText].setChecked(False)
             radioButtonsLayout.addWidget(self.radioButtons[btnText],
                                          pos[0], pos[1])
-            # self._radioButton.toggled.connect(lambda:
-            #                                   self.btnstate(self._radioButton))
+            self.radioButtons[btnText].clicked.connect(partial
+                                                       (self._draw,
+                                                        btnText))
+        # self._radioButton.toggled.connect(lambda:
+        #                                   self.btnstate(self._radioButton))
         self.layout.addLayout(radioButtonsLayout)
         self._radioButtonState = True
 
@@ -125,6 +126,9 @@ class AppUI(QMainWindow):
             self.radioButtons2[btnText].setChecked(False)
             radioButtons2Layout.addWidget(self.radioButtons2[btnText],
                                           pos[0], pos[1])
+            self.radioButtons2[btnText].clicked.connect(partial
+                                                        (self._draw,
+                                                         btnText))
             # self._radioButton.toggled.connect(lambda:
             #                                   self.btnstate(self._radioButton))
         self.layout.addLayout(radioButtons2Layout)
@@ -158,3 +162,17 @@ class AppUI(QMainWindow):
                 elif self._box.currentText() == "Liga Smartbank":
                     self._clearRadioButtons()
                     self._createRadioButton2()
+
+    def _draw(self, btnText):
+        graphic = GraphicExcel(self.sheet, btnText)
+        toolbar = NavigationToolbar(graphic, self)
+        self.layout.addWidget(toolbar)
+        self.layout.addWidget(graphic)
+        # self.show()
+
+        # layout = QtWidgets.QVBoxLayout()
+        # layout.addWidget(toolbar)
+        # widget = QWidget()
+        # widget.setLayout(layout)
+        # self.setCentralWidget(widget)
+        # layout.addWidget(sc)
