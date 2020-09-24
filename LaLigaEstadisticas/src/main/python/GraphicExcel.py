@@ -13,7 +13,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         self.firstRow = firstRow
         self.firstCol = 7
         self.lastCol = 44
-        self.gamesPlayed = 38
+        self.gamesPlayed = 2
         self.sheet = sheet
         self.club = club
         self.maxClubs = maxClubs
@@ -52,7 +52,7 @@ class GraphicExcel(FigureCanvasQTAgg):
             else:
                 points = value[0:self.gamesPlayed]
 
-        # print(points)
+        print(points)
         self.createLists(points, pointsNew, rangePoints)
         fig = self.createGraphic(pointsNew, rangePoints)
 
@@ -84,10 +84,9 @@ class GraphicExcel(FigureCanvasQTAgg):
         ax.set_xlim(0, self.gamesPlayed)
         ax.set_facecolor('xkcd:gray')
         ax.set_yticklabels([])
-        ax.set_ylabel('Puntuación', fontsize=10)
-        ax.set_xlabel('Jornadas', fontsize=10)
-        ax.set_title('Club\n')
+        ax.set_ylabel('Puntuación', fontsize=12)
+        ax.set_xlabel('Jornadas', fontsize=12)
+        ax.set_title(self.club, fontsize=12)
         ax.grid(linestyle='--', linewidth=0.5)
-        # plt.show()
 
         return fig
