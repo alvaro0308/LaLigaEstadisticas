@@ -1,34 +1,32 @@
 """AppUI.py."""
 
+import sip
 from PyQt5.QtWidgets import QRadioButton
 from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QToolBar
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
-from PyQt5 import QtCore
 from functools import partial
 from GraphicExcel import GraphicExcel
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-import sip
 
 
 class AppUI(QMainWindow):
     """Este es el docstring de la funcion."""
 
-    def __init__(self, sheet, listClubsSantander, listClubsSmartbank):
+    def __init__(self, sheet, listClubsSantander, listClubsSmartbank,
+                 maxClubsSantander, maxClubsSmartbank, gamesPlayed,
+                 firstRowSantander, firstRowSmartbank):
         """Este es el docstring de la funcion."""
         super().__init__()
         self.listSantander = listClubsSantander
         self.listSmartbank = listClubsSmartbank
+        self.maxClubsSantander = maxClubsSantander
+        self.maxClubsSmartbank = maxClubsSmartbank
+        self.firstRowSantander = firstRowSantander
+        self.firstRowSmartbank = firstRowSmartbank
         self.showMaximized()
-        # self.setFixedSize()
-        self.layout = QVBoxLayout()
+        self.layout = QGridLayout()
         self.sheet = sheet
 
         _centralWidget = QWidget()
@@ -37,7 +35,7 @@ class AppUI(QMainWindow):
 
         self._createBox()
         self._connectSignals()
-        self._check = True
+        # self._check = True
         self._radioButtonState = False
         self._radioButton2State = False
 
@@ -48,13 +46,12 @@ class AppUI(QMainWindow):
         self._box.addItems(["Seleccione un campeonato",
                             "Liga Santander", "Liga Smartbank"])
         self.setWindowTitle("LaLigaEstadisticas")
-        self.layout.addWidget(self._box)
+        self.layout.addWidget(self._box, 0, 0)
 
     def _createRadioButton(self):
         """Este es el docstring de la funcion."""
         self.radioButtons = {}
         radioButtonsLayout = QGridLayout()
-        # Button text | position on the QGridLayout
         self.radioButtons = {
             self.listSantander[0]: (0, 0),
             self.listSantander[1]: (1, 0),
@@ -77,7 +74,6 @@ class AppUI(QMainWindow):
             self.listSantander[18]: (8, 1),
             self.listSantander[19]: (9, 1),
         }
-        # Create the buttons and add them to the grid layout
         for btnText, pos in self.radioButtons.items():
             self.radioButtons[btnText] = QRadioButton(btnText)
             self.radioButtons[btnText].setFixedSize(140, 90)
@@ -85,18 +81,15 @@ class AppUI(QMainWindow):
             radioButtonsLayout.addWidget(self.radioButtons[btnText],
                                          pos[0], pos[1])
             self.radioButtons[btnText].clicked.connect(partial
-                                                       (self._draw,
+                                                       (self._drawSantander,
                                                         btnText))
-        # self._radioButton.toggled.connect(lambda:
-        #                                   self.btnstate(self._radioButton))
-        self.layout.addLayout(radioButtonsLayout)
+        self.layout.addLayout(radioButtonsLayout, 1, 0)
         self._radioButtonState = True
 
     def _createRadioButton2(self):
         """Este es el docstring de la funcion."""
         self.radioButtons2 = {}
         radioButtons2Layout = QGridLayout()
-        # Button text | position on the QGridLayout
         self.radioButtons2 = {
             self.listSmartbank[0]: (0, 0),
             self.listSmartbank[1]: (1, 0),
@@ -119,7 +112,6 @@ class AppUI(QMainWindow):
             self.listSmartbank[18]: (8, 1),
             self.listSmartbank[19]: (9, 1),
         }
-        # Create the buttons and add them to the grid layout
         for btnText, pos in self.radioButtons2.items():
             self.radioButtons2[btnText] = QRadioButton(btnText)
             self.radioButtons2[btnText].setFixedSize(140, 90)
@@ -127,11 +119,11 @@ class AppUI(QMainWindow):
             radioButtons2Layout.addWidget(self.radioButtons2[btnText],
                                           pos[0], pos[1])
             self.radioButtons2[btnText].clicked.connect(partial
-                                                        (self._draw,
+                                                        (self._drawSmartbank,
                                                          btnText))
             # self._radioButton.toggled.connect(lambda:
             #                                   self.btnstate(self._radioButton))
-        self.layout.addLayout(radioButtons2Layout)
+        self.layout.addLayout(radioButtons2Layout, 1, 0)
         self._radioButton2State = True
 
     def _clearRadioButtons(self):
@@ -154,20 +146,20 @@ class AppUI(QMainWindow):
             self._clearRadioButtons()
         else:
             print("Campeonato seleccionado: ", self._box.currentText())
-            if self._check:
-                # self._check = False
-                if self._box.currentText() == "Liga Santander":
-                    self._clearRadioButtons()
-                    self._createRadioButton()
-                elif self._box.currentText() == "Liga Smartbank":
-                    self._clearRadioButtons()
-                    self._createRadioButton2()
+            # if self._check:
+            if self._box.currentText() == "Liga Santander":
+                self._clearRadioButtons()
+                self._createRadioButton()
+            elif self._box.currentText() == "Liga Smartbank":
+                self._clearRadioButtons()
+                self._createRadioButton2()
 
-    def _draw(self, btnText):
-        graphic = GraphicExcel(self.sheet, btnText)
+    def _drawSantander(self, btnText):
+        graphic = GraphicExcel(self.sheet, btnText,
+                               self.maxClubsSantander, self.firstRowSantander)
         toolbar = NavigationToolbar(graphic, self)
-        self.layout.addWidget(toolbar)
-        self.layout.addWidget(graphic)
+        self.layout.addWidget(toolbar, 0, 1)
+        self.layout.addWidget(graphic, 1, 1)
         # self.show()
 
         # layout = QtWidgets.QVBoxLayout()
@@ -176,3 +168,10 @@ class AppUI(QMainWindow):
         # widget.setLayout(layout)
         # self.setCentralWidget(widget)
         # layout.addWidget(sc)
+
+    def _drawSmartbank(self, btnText):
+        graphic = GraphicExcel(self.sheet, btnText,
+                               self.maxClubsSmartbank, self.firstRowSmartbank)
+        toolbar = NavigationToolbar(graphic, self)
+        self.layout.addWidget(toolbar, 0, 1)
+        self.layout.addWidget(graphic, 1, 1)

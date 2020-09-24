@@ -1,14 +1,15 @@
 """LaLigaEstadisticas App."""
 
-# Filename: AppUI.py
+# Filename: App.py
 # export PYTHONIOENCODING=utf-8
 
-from fbs_runtime.application_context.PyQt5 import ApplicationContext
+# from fbs_runtime.application_context.PyQt5 import ApplicationContext
+import sys
 from AppUI import AppUI
 from openpyxl import load_workbook
-import sys
-from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.QtGui import QPalette, QColor
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QPalette
+from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
 
 __version__ = "alpha"
@@ -38,7 +39,6 @@ def darkMode(app):
     palette.setColor(QPalette.Button, QColor(53, 53, 53))
     palette.setColor(QPalette.ButtonText, Qt.white)
     palette.setColor(QPalette.BrightText, Qt.red)
-
     palette.setColor(QPalette.Highlight, QColor(0, 87, 184).lighter())
     palette.setColor(QPalette.HighlightedText, Qt.black)
     app.setPalette(palette)
@@ -54,8 +54,6 @@ def main():
     maxClubsSmartbank = 22
     firstRowSantander = 3
     firstRowSmartbank = 25
-    firstCol = 7
-    lastCol = 44
     gamesPlayed = 38
 
     listClubsSantander = []
@@ -67,16 +65,17 @@ def main():
 
     app = QApplication(sys.argv)
     darkMode(app)
-    view = AppUI(sheet, listClubsSantander, listClubsSmartbank)
+    view = AppUI(sheet, listClubsSantander, listClubsSmartbank,
+                 maxClubsSantander, maxClubsSmartbank, gamesPlayed,
+                 firstRowSantander, firstRowSmartbank)
     view.show()
     sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
     main()
-    appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
-    window = QMainWindow()
-    window.resize(250, 150)
-    window.show()
-    exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
-    sys.exit(exit_code)
+    # appctxt = ApplicationContext()
+    # window = QMainWindow()
+    # window.resize(250, 150)
+    # window.show()
+    # exit_code = appctxt.app.exec_()
