@@ -3,7 +3,7 @@
 # Filename: LaLigaEstadisticas.py
 # export PYTHONIOENCODING=utf-8
 
-# from fbs_runtime.application_context.PyQt5 import ApplicationContext
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import sys
 from AppUI import AppUI
 from openpyxl import load_workbook
