@@ -81,9 +81,19 @@ class AppUI(QMainWindow):
             self.listSantander[19]: (9, 1),
         }
         for btnText, pos in self.radioButtons.items():
-            self.radioButtons[btnText] = QRadioButton(btnText)
-            self.radioButtons[btnText].setFixedSize(140, 90)
+            self.radioButtons[btnText] = QLabel(self)
+            pixmap = QPixmap(
+                '/home/alvaro/github/LaLigaEstadisticas/' + btnText + '.png')
+            pixmap = pixmap.scaled(82.64, 82.64)
+            self.radioButtons[btnText].setPixmap(pixmap)
+            radioButtonsLayout.addWidget(self.radioButtons[btnText],
+                                         pos[0], pos[1])
+
+            # self.radioButtons2[btnText] = QRadioButton(btnText)
+            self.radioButtons[btnText] = QRadioButton("")
+            self.radioButtons[btnText].setFixedSize(140, 70)
             self.radioButtons[btnText].setChecked(False)
+            print(btnText)
             radioButtonsLayout.addWidget(self.radioButtons[btnText],
                                          pos[0], pos[1])
             self.radioButtons[btnText].clicked.connect(partial
