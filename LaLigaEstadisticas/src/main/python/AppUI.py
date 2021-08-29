@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import QMainWindow
 from functools import partial
 from GraphicExcel import GraphicExcel
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel
+from PyQt5.QtGui import QIcon, QPixmap
 
 
 class AppUI(QMainWindow):
@@ -21,6 +23,10 @@ class AppUI(QMainWindow):
         super().__init__()
         self.listSantander = listClubsSantander
         self.listSmartbank = listClubsSmartbank
+        self.listImageSmartbank = []
+        for i in range(maxClubsSmartbank):
+            self.listImageSmartbank.append(
+                "/home/alvaro/github/LaLigaEstadisticas/real-madrid.png")
         self.maxClubsSantander = maxClubsSantander
         self.maxClubsSmartbank = maxClubsSmartbank
         self.firstRowSantander = firstRowSantander
@@ -101,21 +107,33 @@ class AppUI(QMainWindow):
             self.listSmartbank[7]: (7, 0),
             self.listSmartbank[8]: (8, 0),
             self.listSmartbank[9]: (9, 0),
-            self.listSmartbank[10]: (0, 1),
-            self.listSmartbank[11]: (1, 1),
-            self.listSmartbank[12]: (2, 1),
-            self.listSmartbank[13]: (3, 1),
-            self.listSmartbank[14]: (4, 1),
-            self.listSmartbank[15]: (5, 1),
-            self.listSmartbank[16]: (6, 1),
-            self.listSmartbank[17]: (7, 1),
-            self.listSmartbank[18]: (8, 1),
-            self.listSmartbank[19]: (9, 1),
+            self.listSmartbank[10]: (10, 0),
+            self.listSmartbank[11]: (0, 1),
+            self.listSmartbank[12]: (1, 1),
+            self.listSmartbank[13]: (2, 1),
+            self.listSmartbank[14]: (3, 1),
+            self.listSmartbank[15]: (4, 1),
+            self.listSmartbank[16]: (5, 1),
+            self.listSmartbank[17]: (6, 1),
+            self.listSmartbank[18]: (7, 1),
+            self.listSmartbank[19]: (8, 1),
+            self.listSmartbank[20]: (9, 1),
+            self.listSmartbank[21]: (10, 1),
         }
         for btnText, pos in self.radioButtons2.items():
-            self.radioButtons2[btnText] = QRadioButton(btnText)
-            self.radioButtons2[btnText].setFixedSize(140, 90)
+            self.radioButtons2[btnText] = QLabel(self)
+            pixmap = QPixmap(
+                '/home/alvaro/github/LaLigaEstadisticas/' + btnText + '.png')
+            pixmap = pixmap.scaled(82.64, 82.64)
+            self.radioButtons2[btnText].setPixmap(pixmap)
+            radioButtons2Layout.addWidget(self.radioButtons2[btnText],
+                                          pos[0], pos[1])
+
+            # self.radioButtons2[btnText] = QRadioButton(btnText)
+            self.radioButtons2[btnText] = QRadioButton("")
+            self.radioButtons2[btnText].setFixedSize(140, 70)
             self.radioButtons2[btnText].setChecked(False)
+            print(btnText)
             radioButtons2Layout.addWidget(self.radioButtons2[btnText],
                                           pos[0], pos[1])
             self.radioButtons2[btnText].clicked.connect(partial

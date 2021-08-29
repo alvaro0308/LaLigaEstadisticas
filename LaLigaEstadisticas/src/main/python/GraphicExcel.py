@@ -13,10 +13,11 @@ class GraphicExcel(FigureCanvasQTAgg):
         self.firstRow = firstRow
         self.firstCol = 7
         self.lastCol = 44
-        self.gamesPlayed = 2
+        self.gamesPlayed = 20
         self.sheet = sheet
         self.club = club
         self.maxClubs = maxClubs
+        self.image = "/home/alvaro/github/LaLigaEstadisticas/real-madrid.png"
 
         fig = self.printPointsClub()
         super(GraphicExcel, self).__init__(fig)
