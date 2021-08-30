@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import sys
+import mplcursors
 
 
 class GraphicExcel(FigureCanvasQTAgg):
@@ -69,6 +70,8 @@ class GraphicExcel(FigureCanvasQTAgg):
         """Create lists points and range."""
         temp = 0
         for i in range(0, self.gamesPlayed):
+            if points[i] == '-':
+                break
             pointsNew[i] = points[i] - 1.5 + temp
             temp = pointsNew[i]
         for j in range(1, self.gamesPlayed + 1):
@@ -89,5 +92,13 @@ class GraphicExcel(FigureCanvasQTAgg):
         ax.set_xlabel('Jornadas', fontsize=12)
         ax.set_title(self.club, fontsize=12)
         ax.grid(linestyle='--', linewidth=0.5)
+
+        cursor = mplcursors.cursor(ax, hover=True)
+
+        @cursor.connect("add")
+        def on_add(sel):
+            sel.annotation.get_bbox_patch().set(fc="white", zorder=20, alpha=1)
+            sel.annotation.arrow_patch.set(
+                arrowstyle="simple", fc="white", alpha=1)
 
         return fig
