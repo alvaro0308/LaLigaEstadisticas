@@ -88,7 +88,6 @@ class GraphicExcel(FigureCanvasQTAgg):
         lines = ax.plot(rangePoints, pointsNew, color='k')
         ax.set_xlim(0, self.gamesPlayed)
         ax.set_facecolor('xkcd:gray')
-        # ax.set_yticklabels(0.5)
         ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
         ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
         ax.set_ylabel('Puntuación', fontsize=12)
@@ -111,7 +110,7 @@ class GraphicExcel(FigureCanvasQTAgg):
                 cursor.connect('add', func)
             return cursor
 
-        cursor = mplcursorPoints(
+        mplcursorPoints(
             lines, ax=ax, func=on_add, hover=False)
 
         return fig
