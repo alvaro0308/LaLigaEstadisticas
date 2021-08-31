@@ -1,6 +1,7 @@
 """GraphicExcel.py."""
 
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import sys
 import mplcursors
@@ -84,21 +85,33 @@ class GraphicExcel(FigureCanvasQTAgg):
         fig.tight_layout()
         fig.patch.set_facecolor('xkcd:gray')
         ax.scatter(rangePoints, pointsNew, color='b')
-        ax.plot(rangePoints, pointsNew, color='k')
+        lines = ax.plot(rangePoints, pointsNew, color='k')
         ax.set_xlim(0, self.gamesPlayed)
         ax.set_facecolor('xkcd:gray')
-        ax.set_yticklabels([])
+        # ax.set_yticklabels(0.5)
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
         ax.set_ylabel('Puntuación', fontsize=12)
         ax.set_xlabel('Jornadas', fontsize=12)
         ax.set_title(self.club, fontsize=12)
         ax.grid(linestyle='--', linewidth=0.5)
 
-        cursor = mplcursors.cursor(ax, hover=True)
-
-        @cursor.connect("add")
         def on_add(sel):
+            sel.annotation.set_text(
+                "Primera parte para el Málaga, Mirandés no atacó. Segunda parte dos tiros muy peligrosos del Mirandés\ny gol anulado por falta inexistente. Gol Mirandés en el 94 con fallo en defensa increíble.\nLo anulan por falta previa inexistente de nuevo. Atraco al Mirandés")
             sel.annotation.get_bbox_patch().set(fc="white", zorder=20, alpha=1)
             sel.annotation.arrow_patch.set(
                 arrowstyle="simple", fc="white", alpha=1)
+
+        def mplcursorPoints(lines, ax=None, func=None, **kwargs):
+            scats = [ax.scatter(x=line.get_xdata(), y=line.get_ydata(),
+                                color='none') for line in lines]
+            cursor = mplcursors.cursor(scats, **kwargs)
+            if func is not None:
+                cursor.connect('add', func)
+            return cursor
+
+        cursor = mplcursorPoints(
+            lines, ax=ax, func=on_add, hover=False)
 
         return fig
