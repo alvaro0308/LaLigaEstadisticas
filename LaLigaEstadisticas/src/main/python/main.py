@@ -21,8 +21,10 @@ class App:
 
     def __init__(self):
         """."""
+        # workbook = load_workbook(
+        #     filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela.xlsx")
         workbook = load_workbook(
-            filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela.xlsx")
+            filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela 21-22.xlsx")
         self.sheet = workbook.active
 
         maxClubsSantander = 20
@@ -33,14 +35,22 @@ class App:
 
         listClubsSantander = []
         listClubsSmartbank = []
+        dictCommentsSantander = {}
+        dictCommentsSmartbank = {}
         self.readClubs(listClubsSantander, maxClubsSantander,
                        firstRowSantander)
         self.readClubs(listClubsSmartbank, maxClubsSmartbank,
                        firstRowSmartbank)
+        for clubSantander in listClubsSantander:
+            dictCommentsSantander[clubSantander] = self.readCommentsClubs(listClubsSmartbank, maxClubsSmartbank,
+                                                                          firstRowSmartbank, clubSantander)
+        for clubSmartbank in listClubsSmartbank:
+            dictCommentsSmartbank[clubSmartbank] = self.readCommentsClubs(listClubsSmartbank, maxClubsSmartbank,
+                                                                          firstRowSmartbank, clubSmartbank)
 
         self.app = QApplication(sys.argv)
         self.darkMode()
-        view = AppUI(self.sheet, listClubsSantander, listClubsSmartbank,
+        view = AppUI(self.sheet, listClubsSantander, listClubsSmartbank, dictCommentsSantander, dictCommentsSmartbank,
                      maxClubsSantander, maxClubsSmartbank, self.gamesPlayed,
                      firstRowSantander, firstRowSmartbank)
         view.show()
@@ -53,6 +63,36 @@ class App:
                                          min_col=5, max_col=5,
                                          values_only=True):
             listClubs.append(cell[0])
+            # print(cell[0])
+
+    def readCommentsClubs(self, listClubs, maxClubs, firstRow, club):
+        """."""
+        counterBlank = 0
+        currentRow = 3
+        listComments = []
+        for cell in self.sheet.iter_rows(min_row=3,
+                                         min_col=2, max_col=2,
+                                         values_only=True):
+            # listClubs.append(cell[0])
+            if cell[0] is None:
+                counterBlank += 1
+            else:
+                counterBlank = 0
+            if counterBlank > 2:
+                break
+            clubs = str(self.sheet.cell(currentRow, 1).value).split(" - ")
+            for i in clubs:
+                if i == club:
+                    # print(clubs)
+                    # print(str(self.sheet.cell(currentRow, 1).
+                    #           value) + " " + str(cell[0]) + " " + str(self.sheet.cell(currentRow, 3).
+                    #                                                   value))
+                    listComments.append(str(self.sheet.cell(currentRow, 1).
+                                            value) + ": " + str(cell[0]) + "_ " + str(self.sheet.cell(currentRow, 3).
+                                                                                      value))
+            currentRow += 1
+
+        return listComments
 
     def darkMode(self):
         """."""

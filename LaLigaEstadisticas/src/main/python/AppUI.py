@@ -17,6 +17,7 @@ class AppUI(QMainWindow):
     """Este es el docstring de la funcion."""
 
     def __init__(self, sheet, listClubsSantander, listClubsSmartbank,
+                 dictCommentsSantander, dictCommentsSmartbank,
                  maxClubsSantander, maxClubsSmartbank, gamesPlayed,
                  firstRowSantander, firstRowSmartbank):
         """Este es el docstring de la funcion."""
@@ -29,6 +30,8 @@ class AppUI(QMainWindow):
         self.listSmartbankDuplicated = listClubsSmartbank.copy()
         for i in range(0, len(self.listSmartbankDuplicated)):
             self.listSmartbankDuplicated[i] += "2"
+        self.dictCommentsSantander = dictCommentsSantander
+        self.dictCommentsSmartbank = dictCommentsSmartbank
         self.maxClubsSantander = maxClubsSantander
         self.maxClubsSmartbank = maxClubsSmartbank
         self.firstRowSantander = firstRowSantander
@@ -222,8 +225,7 @@ class AppUI(QMainWindow):
         if self._box.currentText() == "Seleccione un campeonato":
             self._clearRadioButtons()
         else:
-            print("Campeonato seleccionado: ", self._box.currentText())
-            # if self._check:
+            # print("Campeonato seleccionado: ", self._box.currentText())
             if self._box.currentText() == "Liga Santander":
                 self._clearRadioButtons()
                 self._createRadioButton()
@@ -233,7 +235,7 @@ class AppUI(QMainWindow):
 
     def _drawSantander(self, btnText):
         graphic = GraphicExcel(self.sheet, btnText,
-                               self.maxClubsSantander, self.firstRowSantander)
+                               self.maxClubsSantander, self.firstRowSantander, self.dictCommentsSantander[btnText])
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
@@ -248,7 +250,7 @@ class AppUI(QMainWindow):
 
     def _drawSmartbank(self, btnText):
         graphic = GraphicExcel(self.sheet, btnText,
-                               self.maxClubsSmartbank, self.firstRowSmartbank)
+                               self.maxClubsSmartbank, self.firstRowSmartbank, self.dictCommentsSmartbank[btnText])
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)

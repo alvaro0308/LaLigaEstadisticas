@@ -10,7 +10,7 @@ import mplcursors
 class GraphicExcel(FigureCanvasQTAgg):
     """Este es el docstring de la funcion."""
 
-    def __init__(self, sheet, club, maxClubs, firstRow):
+    def __init__(self, sheet, club, maxClubs, firstRow, listComments):
         """Este es el docstring de la funcion."""
         self.firstRow = firstRow
         self.firstCol = 7
@@ -19,6 +19,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         self.sheet = sheet
         self.club = club
         self.maxClubs = maxClubs
+        self.listComments = listComments
         self.image = "/home/alvaro/github/LaLigaEstadisticas/real-madrid.png"
 
         fig = self.printPointsClub()
@@ -55,7 +56,7 @@ class GraphicExcel(FigureCanvasQTAgg):
             else:
                 points = value[0:self.gamesPlayed]
 
-        print(points)
+        # print(points)
         self.createLists(points, pointsNew, rangePoints)
         fig = self.createGraphic(pointsNew, rangePoints)
 
@@ -85,6 +86,10 @@ class GraphicExcel(FigureCanvasQTAgg):
         fig.tight_layout()
         fig.patch.set_facecolor('xkcd:gray')
         ax.scatter(rangePoints, pointsNew, color='b')
+        # print("rangePoints")
+        # print(rangePoints)
+        # print("pointsNew")
+        # print(pointsNew)
         lines = ax.plot(rangePoints, pointsNew, color='k')
         ax.set_xlim(0, self.gamesPlayed)
         ax.set_facecolor('xkcd:gray')
@@ -96,8 +101,14 @@ class GraphicExcel(FigureCanvasQTAgg):
         ax.grid(linestyle='--', linewidth=0.5)
 
         def on_add(sel):
-            sel.annotation.set_text(
-                "Primera parte para el Málaga, Mirandés no atacó. Segunda parte dos tiros muy peligrosos del Mirandés\ny gol anulado por falta inexistente. Gol Mirandés en el 94 con fallo en defensa increíble.\nLo anulan por falta previa inexistente de nuevo. Atraco al Mirandés")
+            # print(str(sel.target[0]) + " " + str(sel.target[1]))
+            # print(self.listComments[int(sel.target[0])])
+            # sel.annotation.set_text(
+            #     "Primera parte para el Málaga, Mirandés no atacó. Segunda parte dos tiros muy peligrosos del Mirandés\ny gol anulado por falta inexistente. Gol Mirandés en el 94 con fallo en defensa increíble.\nLo anulan por falta previa inexistente de nuevo. Atraco al Mirandés")
+            text = self.listComments[int(
+                sel.target[0]) - 1].replace("_ ", "\n")
+
+            sel.annotation.set_text(text)
             sel.annotation.get_bbox_patch().set(fc="white", zorder=20, alpha=1)
             sel.annotation.arrow_patch.set(
                 arrowstyle="simple", fc="white", alpha=1)
