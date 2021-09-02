@@ -12,7 +12,6 @@ from openpyxl import load_workbook
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QPalette, QColor
 
-
 __version__ = "alpha"
 __author__ = "Álvaro"
 
