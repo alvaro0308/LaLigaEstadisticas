@@ -1,16 +1,11 @@
 """AppUI.py."""
 
 import sip
-from PyQt5.QtWidgets import QRadioButton
-from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QMainWindow
 from functools import partial
+from PyQt5.QtGui import QPixmap
 from GraphicExcel import GraphicExcel
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QRadioButton, QComboBox, QWidget, QGridLayout, QMainWindow, QLabel
 
 
 class AppUI(QMainWindow):
@@ -18,7 +13,7 @@ class AppUI(QMainWindow):
 
     def __init__(self, sheet, listClubsSantander, listClubsSmartbank,
                  dictCommentsSantander, dictCommentsSmartbank,
-                 maxClubsSantander, maxClubsSmartbank, gamesPlayed,
+                 maxClubsSantander, maxClubsSmartbank,
                  firstRowSantander, firstRowSmartbank):
         """Este es el docstring de la funcion."""
         super().__init__()
@@ -46,7 +41,6 @@ class AppUI(QMainWindow):
 
         self._createBox()
         self._connectSignals()
-        # self._check = True
         self._radioButtonState = False
         self._radioButton2State = False
 
@@ -116,7 +110,6 @@ class AppUI(QMainWindow):
                 radioButtonsLayout.addWidget(self.radioButtons[btnText],
                                              pos[0], pos[1])
             else:
-                # self.radioButtons2[btnText] = QRadioButton(btnText)
                 self.radioButtons[btnText] = QRadioButton("")
                 self.radioButtons[btnText].setFixedSize(140, 70)
                 self.radioButtons[btnText].setChecked(False)
@@ -190,7 +183,6 @@ class AppUI(QMainWindow):
                 radioButtons2Layout.addWidget(self.radioButtons2[btnText],
                                               pos[0], pos[1])
             else:
-                # self.radioButtons2[btnText] = QRadioButton(btnText)
                 self.radioButtons2[btnText] = QRadioButton("")
                 self.radioButtons2[btnText].setFixedSize(140, 70)
                 self.radioButtons2[btnText].setChecked(False)
@@ -225,7 +217,6 @@ class AppUI(QMainWindow):
         if self._box.currentText() == "Seleccione un campeonato":
             self._clearRadioButtons()
         else:
-            # print("Campeonato seleccionado: ", self._box.currentText())
             if self._box.currentText() == "Liga Santander":
                 self._clearRadioButtons()
                 self._createRadioButton()
@@ -239,7 +230,6 @@ class AppUI(QMainWindow):
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
-        # self.show()
 
         # layout = QtWidgets.QVBoxLayout()
         # layout.addWidget(toolbar)

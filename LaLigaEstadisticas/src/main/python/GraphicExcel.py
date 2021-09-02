@@ -1,10 +1,10 @@
 """GraphicExcel.py."""
 
+import sys
+import mplcursors
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-import sys
-import mplcursors
 
 
 class GraphicExcel(FigureCanvasQTAgg):
@@ -63,7 +63,6 @@ class GraphicExcel(FigureCanvasQTAgg):
             else:
                 points = value[0:self.maxGames]
 
-        # print(points)
         self.createLists(points, pointsNew, rangePoints)
         fig = self.createGraphic(pointsNew, rangePoints)
 
@@ -95,10 +94,6 @@ class GraphicExcel(FigureCanvasQTAgg):
         rangePoints.insert(0, 0)
         pointsNew.insert(0, self.initPoints)
         ax.scatter(rangePoints, pointsNew, color='b')
-        # print("rangePoints")
-        # print(rangePoints)
-        # print("pointsNew")
-        # print(pointsNew)
         lines = ax.plot(rangePoints, pointsNew, color='k')
         ax.set_xlim(0, self.maxXAxis)
         ax.set_ylim([self.initPoints - 10, self.initPoints + 10])
@@ -111,7 +106,6 @@ class GraphicExcel(FigureCanvasQTAgg):
         ax.grid(linestyle='--', linewidth=0.5)
 
         def on_add(sel):
-            # print(str(sel.target[0]) + " " + str(sel.target[1]))
             if int(sel.target[0]) == 0:
                 text = "Inicio"
             elif int(sel.target[0]) - 1 > len(self.listComments) - 1:
@@ -120,7 +114,6 @@ class GraphicExcel(FigureCanvasQTAgg):
                 text = self.listComments[int(
                     sel.target[0]) - 1].replace("_ ", "\n")
             sel.annotation.set_text(text)
-            # sel.annotation.set_weight('bold')
             sel.annotation.get_bbox_patch().set(fc="white", zorder=20, alpha=1)
             sel.annotation.arrow_patch.set(
                 arrowstyle="simple", fc="white", alpha=1)
@@ -135,5 +128,6 @@ class GraphicExcel(FigureCanvasQTAgg):
 
         mplcursorPoints(
             lines, ax=ax, func=on_add, hover=False)
+        plt.close(fig)
 
         return fig

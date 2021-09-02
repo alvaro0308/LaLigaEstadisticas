@@ -3,14 +3,15 @@
 # Filename: LaLigaEstadisticas.py
 # export PYTHONIOENCODING=utf-8
 
-from fbs_runtime.application_context.PyQt5 import ApplicationContext
+
 import sys
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from AppUI import AppUI
+from PyQt5.QtCore import Qt
 from openpyxl import load_workbook
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QPalette
-from PyQt5.QtGui import QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPalette, QColor
+
 
 __version__ = "alpha"
 __author__ = "Álvaro"
@@ -31,7 +32,6 @@ class App:
         maxClubsSmartbank = 22
         firstRowSantander = 3
         firstRowSmartbank = 25
-        self.gamesPlayed = 38
 
         listClubsSantander = []
         listClubsSmartbank = []
@@ -47,11 +47,10 @@ class App:
         for clubSmartbank in listClubsSmartbank:
             dictCommentsSmartbank[clubSmartbank] = self.readCommentsClubs(listClubsSmartbank, maxClubsSmartbank,
                                                                           firstRowSmartbank, clubSmartbank)
-
         self.app = QApplication(sys.argv)
         self.darkMode()
         view = AppUI(self.sheet, listClubsSantander, listClubsSmartbank, dictCommentsSantander, dictCommentsSmartbank,
-                     maxClubsSantander, maxClubsSmartbank, self.gamesPlayed,
+                     maxClubsSantander, maxClubsSmartbank,
                      firstRowSantander, firstRowSmartbank)
         view.show()
         sys.exit(self.app.exec_())
@@ -63,7 +62,6 @@ class App:
                                          min_col=5, max_col=5,
                                          values_only=True):
             listClubs.append(cell[0])
-            # print(cell[0])
 
     def readCommentsClubs(self, listClubs, maxClubs, firstRow, club):
         """."""
@@ -73,7 +71,6 @@ class App:
         for cell in self.sheet.iter_rows(min_row=3,
                                          min_col=2, max_col=2,
                                          values_only=True):
-            # listClubs.append(cell[0])
             if cell[0] is None:
                 counterBlank += 1
             else:
@@ -83,10 +80,6 @@ class App:
             clubs = str(self.sheet.cell(currentRow, 1).value).split(" - ")
             for i in clubs:
                 if i == club:
-                    # print(clubs)
-                    # print(str(self.sheet.cell(currentRow, 1).
-                    #           value) + " " + str(cell[0]) + " " + str(self.sheet.cell(currentRow, 3).
-                    #                                                   value))
                     listComments.append(str(self.sheet.cell(currentRow, 1).
                                             value) + ": " + str(cell[0]) + "_ " + str(self.sheet.cell(currentRow, 3).
                                                                                       value))
