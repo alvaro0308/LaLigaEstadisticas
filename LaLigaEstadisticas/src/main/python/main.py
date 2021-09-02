@@ -21,10 +21,10 @@ class App:
 
     def __init__(self):
         """."""
-        # workbook = load_workbook(
-        #     filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela 21-22 Antigua.xlsx")
         workbook = load_workbook(
-            filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela 21-22.xlsx")
+            filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela 21-22 Antigua.xlsx")
+        # workbook = load_workbook(
+        #     filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela 21-22.xlsx")
         self.sheet = workbook.active
 
         maxClubsSantander = 20

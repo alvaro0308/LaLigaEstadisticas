@@ -1,6 +1,7 @@
 """GraphicExcel.py."""
 
 import sys
+from matplotlib.collections import PolyCollection
 import mplcursors
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -15,6 +16,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         self.firstRow = firstRow
         self.firstCol = 7
         self.maxGames = 42
+        self.APLZ = -10
         self.initPoints = 100
         self.sheet = sheet
         self.club = club
@@ -78,6 +80,12 @@ class GraphicExcel(FigureCanvasQTAgg):
         """Create lists points and range."""
         temp = 100
         for i in range(0, self.maxGames):
+            if points[i] == "APLZ":
+                print("APLZ")
+                pointsNew[i] = self.APLZ
+                pointsNew[i] = None
+                continue
+
             if points[i] == '-' or points[i] is None or (type(points[i]) is not float and type(points[i]) is not int):
                 break
             pointsNew[i] = points[i] - 1.5 + temp
@@ -95,6 +103,13 @@ class GraphicExcel(FigureCanvasQTAgg):
         pointsNew.insert(0, self.initPoints)
         ax.scatter(rangePoints, pointsNew, color='b')
         lines = ax.plot(rangePoints, pointsNew, color='k')
+        for i in range(0, len(pointsNew)):
+            if pointsNew[i] == None and pointsNew[i-1] != None and pointsNew[i+1] != None:
+                print("APLZ2 " + str(rangePoints[i]
+                                     ) + " " + str(pointsNew[i-1]) + " " + str(i))
+                # ax.scatter(rangePoints[i], pointsNew[i-1], color='r')
+                ax.plot([i - 1, i, i + 1], [pointsNew[i-1], pointsNew[i-1], pointsNew[i-1]], linestyle='--',
+                        linewidth=0.5, color='r')
         ax.set_xlim(0, self.maxXAxis)
         ax.set_ylim([self.initPoints - 10, self.initPoints + 10])
         ax.set_facecolor('xkcd:gray')
@@ -105,7 +120,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         ax.set_title(self.club, fontsize=12)
         ax.grid(linestyle='--', linewidth=0.5)
 
-        def on_add(sel):
+        def onAdd(sel):
             if int(sel.target[0]) == 0:
                 text = "Inicio"
             elif int(sel.target[0]) - 1 > len(self.listComments) - 1:
@@ -127,7 +142,7 @@ class GraphicExcel(FigureCanvasQTAgg):
             return cursor
 
         mplcursorPoints(
-            lines, ax=ax, func=on_add, hover=False)
+            lines, ax=ax, func=onAdd, hover=False)
         plt.close(fig)
 
         return fig

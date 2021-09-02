@@ -34,6 +34,9 @@ class AppUI(QMainWindow):
         self.showMaximized()
         self.layout = QGridLayout()
         self.sheet = sheet
+        width = 1460
+        height = 1024
+        self.setMinimumSize(width, height)
 
         _centralWidget = QWidget()
         _centralWidget.setLayout(self.layout)
