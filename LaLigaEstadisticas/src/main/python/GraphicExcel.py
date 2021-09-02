@@ -10,15 +10,22 @@ import mplcursors
 class GraphicExcel(FigureCanvasQTAgg):
     """Este es el docstring de la funcion."""
 
-    def __init__(self, sheet, club, maxClubs, firstRow, listComments):
+    def __init__(self, sheet, club, maxClubs, firstRow, listComments, league):
         """Este es el docstring de la funcion."""
         self.firstRow = firstRow
         self.firstCol = 7
-        self.lastCol = 44
-        self.gamesPlayed = 20
+        self.maxGames = 42
+        self.initPoints = 100
         self.sheet = sheet
         self.club = club
         self.maxClubs = maxClubs
+        self.league = league
+        if self.league == "Santander":
+            self.maxXAxis = 39
+            self.lastCol = 46
+        elif self.league == "Smartbank":
+            self.maxXAxis = 43
+            self.lastCol = 48
         self.listComments = listComments
         self.image = "/home/alvaro/github/LaLigaEstadisticas/real-madrid.png"
 
@@ -42,8 +49,8 @@ class GraphicExcel(FigureCanvasQTAgg):
 
     def printPointsClub(self):
         """Print points clubs."""
-        pointsNew = [None] * self.gamesPlayed
-        rangePoints = [None] * self.gamesPlayed
+        pointsNew = [None] * self.maxGames
+        rangePoints = [None] * self.maxGames
         self.checkGames()
         rowClub = self.getRowClub()
 
@@ -51,10 +58,10 @@ class GraphicExcel(FigureCanvasQTAgg):
                                           min_col=self.firstCol,
                                           max_col=self.lastCol,
                                           values_only=True):
-            if self.gamesPlayed == 1:
+            if self.maxGames == 1:
                 points = value[0]
             else:
-                points = value[0:self.gamesPlayed]
+                points = value[0:self.maxGames]
 
         # print(points)
         self.createLists(points, pointsNew, rangePoints)
@@ -64,19 +71,19 @@ class GraphicExcel(FigureCanvasQTAgg):
 
     def checkGames(self):
         """Check number of games."""
-        if self.gamesPlayed == 1:
+        if self.maxGames == 1:
             print("Games played is equal to one, can't graphic it")
             sys.exit(1)
 
     def createLists(self, points, pointsNew, rangePoints):
         """Create lists points and range."""
-        temp = 0
-        for i in range(0, self.gamesPlayed):
-            if points[i] == '-':
+        temp = 100
+        for i in range(0, self.maxGames):
+            if points[i] == '-' or points[i] is None or (type(points[i]) is not float and type(points[i]) is not int):
                 break
             pointsNew[i] = points[i] - 1.5 + temp
             temp = pointsNew[i]
-        for j in range(1, self.gamesPlayed + 1):
+        for j in range(1, self.maxGames + 1):
             rangePoints[j - 1] = j
 
     def createGraphic(self, pointsNew, rangePoints):
@@ -85,16 +92,19 @@ class GraphicExcel(FigureCanvasQTAgg):
         fig, ax = plt.subplots(figsize=(10, 2))
         fig.tight_layout()
         fig.patch.set_facecolor('xkcd:gray')
+        rangePoints.insert(0, 0)
+        pointsNew.insert(0, self.initPoints)
         ax.scatter(rangePoints, pointsNew, color='b')
         # print("rangePoints")
         # print(rangePoints)
         # print("pointsNew")
         # print(pointsNew)
         lines = ax.plot(rangePoints, pointsNew, color='k')
-        ax.set_xlim(0, self.gamesPlayed)
+        ax.set_xlim(0, self.maxXAxis)
+        ax.set_ylim([self.initPoints - 10, self.initPoints + 10])
         ax.set_facecolor('xkcd:gray')
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
-        ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(2))
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(2))
         ax.set_ylabel('Puntuación', fontsize=12)
         ax.set_xlabel('Jornadas', fontsize=12)
         ax.set_title(self.club, fontsize=12)
@@ -102,11 +112,13 @@ class GraphicExcel(FigureCanvasQTAgg):
 
         def on_add(sel):
             # print(str(sel.target[0]) + " " + str(sel.target[1]))
-            # print(self.listComments[int(sel.target[0])])
-            # sel.annotation.set_text(
-            #     "Primera parte para el Málaga, Mirandés no atacó. Segunda parte dos tiros muy peligrosos del Mirandés\ny gol anulado por falta inexistente. Gol Mirandés en el 94 con fallo en defensa increíble.\nLo anulan por falta previa inexistente de nuevo. Atraco al Mirandés")
-            text = self.listComments[int(
-                sel.target[0]) - 1].replace("_ ", "\n")
+            if int(sel.target[0]) == 0:
+                text = "Inicio"
+            elif int(sel.target[0]) - 1 > len(self.listComments) - 1:
+                text = ""
+            else:
+                text = self.listComments[int(
+                    sel.target[0]) - 1].replace("_ ", "\n")
             sel.annotation.set_text(text)
             # sel.annotation.set_weight('bold')
             sel.annotation.get_bbox_patch().set(fc="white", zorder=20, alpha=1)

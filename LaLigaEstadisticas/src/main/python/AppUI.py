@@ -235,7 +235,7 @@ class AppUI(QMainWindow):
 
     def _drawSantander(self, btnText):
         graphic = GraphicExcel(self.sheet, btnText,
-                               self.maxClubsSantander, self.firstRowSantander, self.dictCommentsSantander[btnText])
+                               self.maxClubsSantander, self.firstRowSantander, self.dictCommentsSantander[btnText], "Santander")
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
@@ -250,7 +250,7 @@ class AppUI(QMainWindow):
 
     def _drawSmartbank(self, btnText):
         graphic = GraphicExcel(self.sheet, btnText,
-                               self.maxClubsSmartbank, self.firstRowSmartbank, self.dictCommentsSmartbank[btnText])
+                               self.maxClubsSmartbank, self.firstRowSmartbank, self.dictCommentsSmartbank[btnText], "Smartbank")
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
