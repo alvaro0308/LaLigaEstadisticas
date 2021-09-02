@@ -107,8 +107,8 @@ class GraphicExcel(FigureCanvasQTAgg):
             #     "Primera parte para el Málaga, Mirandés no atacó. Segunda parte dos tiros muy peligrosos del Mirandés\ny gol anulado por falta inexistente. Gol Mirandés en el 94 con fallo en defensa increíble.\nLo anulan por falta previa inexistente de nuevo. Atraco al Mirandés")
             text = self.listComments[int(
                 sel.target[0]) - 1].replace("_ ", "\n")
-
             sel.annotation.set_text(text)
+            # sel.annotation.set_weight('bold')
             sel.annotation.get_bbox_patch().set(fc="white", zorder=20, alpha=1)
             sel.annotation.arrow_patch.set(
                 arrowstyle="simple", fc="white", alpha=1)
