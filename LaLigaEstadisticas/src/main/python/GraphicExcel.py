@@ -67,6 +67,7 @@ class GraphicExcel(FigureCanvasQTAgg):
             else:
                 points = value[0:self.maxGames]
 
+        points = list(points)
         pointsNew = self.createLists(points, pointsNew, rangePoints)
 
         fig = self.createGraphic(pointsNew, rangePoints)
@@ -87,15 +88,32 @@ class GraphicExcel(FigureCanvasQTAgg):
                 pointsNew[i] = None
                 print("1")
                 continue
-            if points[i] == "APLZ J9":
-                print("2")
-                pointsNew[i] = self.APLZ
-                continue
+            if type(points[i]) is str and "APLZ J" in points[i]:
+                splitted = points[i].split(" ")
+                if "J" in splitted[1]:
+                    roundDelayed = int(splitted[1].replace('J', ''))
+                if "," in splitted[2]:
+                    pointsDelayed = splitted[2].replace(',', '.')
+                else:
+                    pointsDelayed = splitted[2]
+
+                try:
+                    pointsDelayed = float(pointsDelayed)
+                    print("A: " + str(roundDelayed) + " " + str(pointsDelayed))
+                    # pointsNew[i] = self.APLZ
+                    del pointsNew[i]
+                    del points[i]
+                    pointsNew.append(None)
+                    i += 1
+                    points.insert(roundDelayed - 1, pointsDelayed)
+                except ValueError:
+                    print("Error casting points to float")
+                    continue
             if points[i] == '-' or points[i] is None or (type(points[i]) is not float and type(points[i]) is not int):
                 break
             pointsNew[i] = points[i] - 1.5 + temp
             temp = pointsNew[i]
-        pointsNew = [i for i in pointsNew if i != self.APLZ]
+        # pointsNew = [i for i in pointsNew if i != self.APLZ]
         for j in range(1, self.maxGames + 1):
             rangePoints[j - 1] = j
 
@@ -116,7 +134,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         prevElem = self.initPoints
         postElem = None
 
-        for i in range(0, len(pointsNew)):
+        for i in range(0, len(pointsNew) - 1):
             if pointsNew[i] == None:
                 aux = i
                 aux2 = i
