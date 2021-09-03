@@ -67,7 +67,8 @@ class GraphicExcel(FigureCanvasQTAgg):
             else:
                 points = value[0:self.maxGames]
 
-        self.createLists(points, pointsNew, rangePoints)
+        pointsNew = self.createLists(points, pointsNew, rangePoints)
+
         fig = self.createGraphic(pointsNew, rangePoints)
 
         return fig
@@ -83,15 +84,22 @@ class GraphicExcel(FigureCanvasQTAgg):
         temp = 100
         for i in range(0, self.maxGames):
             if points[i] == "APLZ":
-                pointsNew[i] = self.APLZ
                 pointsNew[i] = None
+                print("1")
+                continue
+            if points[i] == "APLZ J9":
+                print("2")
+                pointsNew[i] = self.APLZ
                 continue
             if points[i] == '-' or points[i] is None or (type(points[i]) is not float and type(points[i]) is not int):
                 break
             pointsNew[i] = points[i] - 1.5 + temp
             temp = pointsNew[i]
+        pointsNew = [i for i in pointsNew if i != self.APLZ]
         for j in range(1, self.maxGames + 1):
             rangePoints[j - 1] = j
+
+        return pointsNew
 
     def createGraphic(self, pointsNew, rangePoints):
         """Create graphic."""
@@ -101,20 +109,13 @@ class GraphicExcel(FigureCanvasQTAgg):
         fig.patch.set_facecolor('xkcd:gray')
         rangePoints.insert(0, 0)
         pointsNew.insert(0, self.initPoints)
+
+        print(pointsNew)
         ax.scatter(rangePoints, pointsNew, color='b')
         lines = ax.plot(rangePoints, pointsNew, color='k')
-        # for i in range(0, len(pointsNew)):
-        #     if pointsNew[i] == None and pointsNew[i - 1] != None and pointsNew[i + 1] != None:
-        #         print("APLZ2 " + str(rangePoints[i]
-        #                              ) + " " + str(pointsNew[i - 1]) + " " + str(i))
-        #         pointsNew[i] = pointsNew[i - 1]
-        #         ax.plot([i - 1, i], [pointsNew[i - 1], pointsNew[i - 1]], linestyle='--',
-        #                 linewidth=0.5, color='r')
-        #         ax.plot([i, i + 1], [pointsNew[i], pointsNew[i + 1]], color='k')
-        #         ax.scatter(rangePoints[i], pointsNew[i-1], color='r')
         prevElem = self.initPoints
         postElem = None
-        print(pointsNew)
+
         for i in range(0, len(pointsNew)):
             if pointsNew[i] == None:
                 aux = i
