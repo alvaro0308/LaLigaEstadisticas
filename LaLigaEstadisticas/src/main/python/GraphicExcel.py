@@ -132,8 +132,8 @@ class GraphicExcel(FigureCanvasQTAgg):
                 print(
                     "APLZ2 " + str(rangePoints[i]) + " " + str(pointsNew[prevElem]) + " " + str(i))
                 pointsNew[i] = pointsNew[prevElem]
-                ax.plot([prevElem, i], [pointsNew[prevElem], pointsNew[prevElem]], linestyle='--',
-                        linewidth=0.5, color='r')
+                lines += ax.plot([prevElem, i], [pointsNew[prevElem], pointsNew[prevElem]], linestyle='--',
+                                 linewidth=0.5, color='r')
                 if pointsNew[i + 1] != None:
                     ax.plot([i, postElem], [pointsNew[i],
                                             pointsNew[postElem]], color='k')
