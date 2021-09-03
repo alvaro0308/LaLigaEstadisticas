@@ -15,7 +15,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         """Este es el docstring de la funcion."""
         self.firstRow = firstRow
         self.firstCol = 7
-        self.maxGames = 42
+        # self.maxGames = 42
         self.APLZ = -10
         self.initPoints = 100
         self.sheet = sheet
@@ -24,9 +24,11 @@ class GraphicExcel(FigureCanvasQTAgg):
         self.league = league
         if self.league == "Santander":
             self.maxXAxis = 39
+            self.maxGames = 38
             self.lastCol = 46
         elif self.league == "Smartbank":
             self.maxXAxis = 43
+            self.maxGames = 42
             self.lastCol = 48
         self.listComments = listComments
         self.image = "/home/alvaro/github/LaLigaEstadisticas/real-madrid.png"
@@ -81,11 +83,9 @@ class GraphicExcel(FigureCanvasQTAgg):
         temp = 100
         for i in range(0, self.maxGames):
             if points[i] == "APLZ":
-                print("APLZ")
                 pointsNew[i] = self.APLZ
                 pointsNew[i] = None
                 continue
-
             if points[i] == '-' or points[i] is None or (type(points[i]) is not float and type(points[i]) is not int):
                 break
             pointsNew[i] = points[i] - 1.5 + temp
@@ -103,13 +103,42 @@ class GraphicExcel(FigureCanvasQTAgg):
         pointsNew.insert(0, self.initPoints)
         ax.scatter(rangePoints, pointsNew, color='b')
         lines = ax.plot(rangePoints, pointsNew, color='k')
+        # for i in range(0, len(pointsNew)):
+        #     if pointsNew[i] == None and pointsNew[i - 1] != None and pointsNew[i + 1] != None:
+        #         print("APLZ2 " + str(rangePoints[i]
+        #                              ) + " " + str(pointsNew[i - 1]) + " " + str(i))
+        #         pointsNew[i] = pointsNew[i - 1]
+        #         ax.plot([i - 1, i], [pointsNew[i - 1], pointsNew[i - 1]], linestyle='--',
+        #                 linewidth=0.5, color='r')
+        #         ax.plot([i, i + 1], [pointsNew[i], pointsNew[i + 1]], color='k')
+        #         ax.scatter(rangePoints[i], pointsNew[i-1], color='r')
+        prevElem = self.initPoints
+        postElem = None
+        print(pointsNew)
         for i in range(0, len(pointsNew)):
-            if pointsNew[i] == None and pointsNew[i-1] != None and pointsNew[i+1] != None:
-                print("APLZ2 " + str(rangePoints[i]
-                                     ) + " " + str(pointsNew[i-1]) + " " + str(i))
-                # ax.scatter(rangePoints[i], pointsNew[i-1], color='r')
-                ax.plot([i - 1, i, i + 1], [pointsNew[i-1], pointsNew[i-1], pointsNew[i-1]], linestyle='--',
+            if pointsNew[i] == None:
+                aux = i
+                aux2 = i
+                while aux >= 0:
+                    if pointsNew[aux] != None:
+                        prevElem = aux
+                        break
+                    aux -= 1
+                while aux2 < len(pointsNew):
+                    if pointsNew[aux2] != None:
+                        postElem = aux2
+                        break
+                    aux2 += 1
+                print(
+                    "APLZ2 " + str(rangePoints[i]) + " " + str(pointsNew[prevElem]) + " " + str(i))
+                pointsNew[i] = pointsNew[prevElem]
+                ax.plot([prevElem, i], [pointsNew[prevElem], pointsNew[prevElem]], linestyle='--',
                         linewidth=0.5, color='r')
+                if pointsNew[i + 1] != None:
+                    ax.plot([i, postElem], [pointsNew[i],
+                                            pointsNew[postElem]], color='k')
+                ax.scatter(rangePoints[i], pointsNew[prevElem], color='r')
+
         ax.set_xlim(0, self.maxXAxis)
         ax.set_ylim([self.initPoints - 10, self.initPoints + 10])
         ax.set_facecolor('xkcd:gray')

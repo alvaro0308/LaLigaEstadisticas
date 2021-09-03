@@ -41,11 +41,11 @@ class App:
         self.readClubs(listClubsSmartbank, maxClubsSmartbank,
                        firstRowSmartbank)
         for clubSantander in listClubsSantander:
-            dictCommentsSantander[clubSantander] = self.readCommentsClubs(listClubsSmartbank, maxClubsSmartbank,
-                                                                          firstRowSmartbank, clubSantander)
+            dictCommentsSantander[clubSantander] = self.readCommentsClubs(
+                clubSantander)
         for clubSmartbank in listClubsSmartbank:
-            dictCommentsSmartbank[clubSmartbank] = self.readCommentsClubs(listClubsSmartbank, maxClubsSmartbank,
-                                                                          firstRowSmartbank, clubSmartbank)
+            dictCommentsSmartbank[clubSmartbank] = self.readCommentsClubs(
+                clubSmartbank)
         self.app = QApplication(sys.argv)
         self.darkMode()
         view = AppUI(self.sheet, listClubsSantander, listClubsSmartbank, dictCommentsSantander, dictCommentsSmartbank,
@@ -62,7 +62,7 @@ class App:
                                          values_only=True):
             listClubs.append(cell[0])
 
-    def readCommentsClubs(self, listClubs, maxClubs, firstRow, club):
+    def readCommentsClubs(self, club):
         """."""
         counterBlank = 0
         currentRow = 3
