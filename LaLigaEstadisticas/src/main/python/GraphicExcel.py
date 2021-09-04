@@ -68,7 +68,10 @@ class GraphicExcel(FigureCanvasQTAgg):
                 points = value[0:self.maxGames]
 
         points = list(points)
+        print(points)
+        print("Change")
         pointsNew = self.createLists(points, pointsNew, rangePoints)
+        print(points)
 
         fig = self.createGraphic(pointsNew, rangePoints)
 
@@ -80,14 +83,8 @@ class GraphicExcel(FigureCanvasQTAgg):
             print("Games played is equal to one, can't graphic it")
             sys.exit(1)
 
-    def createLists(self, points, pointsNew, rangePoints):
-        """Create lists points and range."""
-        temp = 100
-        for i in range(0, self.maxGames):
-            if points[i] == "APLZ":
-                pointsNew[i] = None
-                print("1")
-                continue
+    def detectDelayedAndPlayed(self, points):
+        for i in range(0, len(points)):
             if type(points[i]) is str and "APLZ J" in points[i]:
                 splitted = points[i].split(" ")
                 if "J" in splitted[1]:
@@ -100,15 +97,24 @@ class GraphicExcel(FigureCanvasQTAgg):
                 try:
                     pointsDelayed = float(pointsDelayed)
                     print("A: " + str(roundDelayed) + " " + str(pointsDelayed))
-                    # pointsNew[i] = self.APLZ
-                    del pointsNew[i]
                     del points[i]
-                    pointsNew.append(None)
                     i += 1
                     points.insert(roundDelayed - 1, pointsDelayed)
                 except ValueError:
                     print("Error casting points to float")
                     continue
+
+    def createLists(self, points, pointsNew, rangePoints):
+        """Create lists points and range."""
+        self.detectDelayedAndPlayed(points)
+        temp = 100
+        for i in range(0, self.maxGames):
+            if points[i] == "APLZ":
+                pointsNew[i] = None
+                print("1")
+                continue
+            # Llego a un APLZ JX Puntuacion
+            #
             if points[i] == '-' or points[i] is None or (type(points[i]) is not float and type(points[i]) is not int):
                 break
             pointsNew[i] = points[i] - 1.5 + temp
