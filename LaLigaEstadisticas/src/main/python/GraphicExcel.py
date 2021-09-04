@@ -55,6 +55,8 @@ class GraphicExcel(FigureCanvasQTAgg):
         """Print points clubs."""
         pointsNew = [None] * self.maxGames
         rangePoints = [None] * self.maxGames
+        gamesDelayed = []
+        gamesDelayedAndPlayed = []
         self.checkGames()
         rowClub = self.getRowClub()
 
@@ -70,10 +72,14 @@ class GraphicExcel(FigureCanvasQTAgg):
         points = list(points)
         print(points)
         print("Change")
-        pointsNew = self.createLists(points, pointsNew, rangePoints)
+        self.detectDelayedAndPlayed(
+            points, gamesDelayed, gamesDelayedAndPlayed)
         print(points)
+        pointsNew = self.createLists(
+            points, pointsNew, rangePoints, gamesDelayed)
 
-        fig = self.createGraphic(pointsNew, rangePoints)
+        fig = self.createGraphic(
+            pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed)
 
         return fig
 
@@ -83,7 +89,7 @@ class GraphicExcel(FigureCanvasQTAgg):
             print("Games played is equal to one, can't graphic it")
             sys.exit(1)
 
-    def detectDelayedAndPlayed(self, points):
+    def detectDelayedAndPlayed(self, points, gamesDelayed, gamesDelayedAndPlayed):
         for i in range(0, len(points)):
             if type(points[i]) is str and "APLZ J" in points[i]:
                 splitted = points[i].split(" ")
@@ -99,33 +105,32 @@ class GraphicExcel(FigureCanvasQTAgg):
                     print("A: " + str(roundDelayed) + " " + str(pointsDelayed))
                     del points[i]
                     i += 1
+                    gamesDelayed.append(i + 1)
+                    gamesDelayedAndPlayed.append(roundDelayed)
                     points.insert(roundDelayed - 1, pointsDelayed)
                 except ValueError:
                     print("Error casting points to float")
                     continue
 
-    def createLists(self, points, pointsNew, rangePoints):
+    def createLists(self, points, pointsNew, rangePoints, gamesDelayed):
         """Create lists points and range."""
-        self.detectDelayedAndPlayed(points)
         temp = 100
         for i in range(0, self.maxGames):
             if points[i] == "APLZ":
                 pointsNew[i] = None
+                gamesDelayed.append(i)
                 print("1")
                 continue
-            # Llego a un APLZ JX Puntuacion
-            #
             if points[i] == '-' or points[i] is None or (type(points[i]) is not float and type(points[i]) is not int):
                 break
             pointsNew[i] = points[i] - 1.5 + temp
             temp = pointsNew[i]
-        # pointsNew = [i for i in pointsNew if i != self.APLZ]
         for j in range(1, self.maxGames + 1):
             rangePoints[j - 1] = j
 
         return pointsNew
 
-    def createGraphic(self, pointsNew, rangePoints):
+    def createGraphic(self, pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed):
         """Create graphic."""
         plt.rcParams['toolbar'] = 'None'
         fig, ax = plt.subplots(figsize=(10, 2))
@@ -136,7 +141,7 @@ class GraphicExcel(FigureCanvasQTAgg):
 
         print(pointsNew)
         ax.scatter(rangePoints, pointsNew, color='b')
-        lines = ax.plot(rangePoints, pointsNew, color='k')
+        linesCursor = ax.plot(rangePoints, pointsNew, color='k')
         prevElem = self.initPoints
         postElem = None
 
@@ -157,12 +162,22 @@ class GraphicExcel(FigureCanvasQTAgg):
                 print(
                     "APLZ2 " + str(rangePoints[i]) + " " + str(pointsNew[prevElem]) + " " + str(i))
                 pointsNew[i] = pointsNew[prevElem]
-                lines += ax.plot([prevElem, i], [pointsNew[prevElem], pointsNew[prevElem]], linestyle='--',
-                                 linewidth=0.5, color='r')
+                linesCursor += ax.plot([prevElem, i], [pointsNew[prevElem], pointsNew[prevElem]], linestyle='--',
+                                       linewidth=0.5, color='r')
                 if pointsNew[i + 1] != None:
                     ax.plot([i, postElem], [pointsNew[i],
                                             pointsNew[postElem]], color='k')
                 ax.scatter(rangePoints[i], pointsNew[prevElem], color='r')
+
+        for j in range(0, len(gamesDelayed)):
+            ax.scatter(gamesDelayed[j],
+                       pointsNew[gamesDelayed[j]], color='r')
+
+        print(len(gamesDelayedAndPlayed))
+        for l in range(0, len(gamesDelayedAndPlayed)):
+            print("Hola")
+            ax.scatter(gamesDelayedAndPlayed[l],
+                       pointsNew[gamesDelayedAndPlayed[l]], color='g')
 
         ax.set_xlim(0, self.maxXAxis)
         ax.set_ylim([self.initPoints - 10, self.initPoints + 10])
@@ -187,16 +202,16 @@ class GraphicExcel(FigureCanvasQTAgg):
             sel.annotation.arrow_patch.set(
                 arrowstyle="simple", fc="white", alpha=1)
 
-        def mplcursorPoints(lines, ax=None, func=None, **kwargs):
+        def mplcursorPoints(linesCursor, ax=None, func=None, **kwargs):
             scats = [ax.scatter(x=line.get_xdata(), y=line.get_ydata(),
-                                color='none') for line in lines]
+                                color='none') for line in linesCursor]
             cursor = mplcursors.cursor(scats, **kwargs)
             if func is not None:
                 cursor.connect('add', func)
             return cursor
 
         mplcursorPoints(
-            lines, ax=ax, func=onAdd, hover=False)
+            linesCursor, ax=ax, func=onAdd, hover=False)
         plt.close(fig)
 
         return fig
