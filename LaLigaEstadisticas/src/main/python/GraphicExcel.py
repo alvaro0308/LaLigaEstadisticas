@@ -105,7 +105,7 @@ class GraphicExcel(FigureCanvasQTAgg):
                     print("A: " + str(roundDelayed) + " " + str(pointsDelayed))
                     del points[i]
                     i += 1
-                    gamesDelayed.append(i + 1)
+                    gamesDelayed.append(i)
                     gamesDelayedAndPlayed.append(roundDelayed)
                     points.insert(roundDelayed - 1, pointsDelayed)
                 except ValueError:
@@ -119,7 +119,6 @@ class GraphicExcel(FigureCanvasQTAgg):
             if points[i] == "APLZ":
                 pointsNew[i] = None
                 gamesDelayed.append(i)
-                print("1")
                 continue
             if points[i] == '-' or points[i] is None or (type(points[i]) is not float and type(points[i]) is not int):
                 break
@@ -175,7 +174,6 @@ class GraphicExcel(FigureCanvasQTAgg):
 
         print(len(gamesDelayedAndPlayed))
         for l in range(0, len(gamesDelayedAndPlayed)):
-            print("Hola")
             ax.scatter(gamesDelayedAndPlayed[l],
                        pointsNew[gamesDelayedAndPlayed[l]], color='g')
 
