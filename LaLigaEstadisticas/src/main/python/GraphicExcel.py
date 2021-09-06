@@ -68,6 +68,11 @@ class GraphicExcel(FigureCanvasQTAgg):
                 points = value[0:self.maxGames]
 
         points = list(points)
+
+        for i in range(0, len(points)):
+            if points[i] != '-' and not points[i].isupper():
+                points[i] = float(points[i].replace(",", "."))
+
         points = self.detectDelayedAndPlayed(
             points, gamesDelayed, gamesDelayedAndPlayed)
         pointsNew = self.createLists(

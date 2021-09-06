@@ -22,7 +22,7 @@ class App:
     def __init__(self):
         """."""
         workbook = load_workbook(
-            filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela 21-22 Antigua.xlsx")
+            filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela Script.xlsx")
         # workbook = load_workbook(
         #     filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela 21-22.xlsx")
         self.sheet = workbook.active
