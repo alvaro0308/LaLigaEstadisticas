@@ -29,7 +29,6 @@ class GraphicExcel(FigureCanvasQTAgg):
             self.maxGames = 42
             self.lastCol = 48
         self.listComments = listComments
-        self.image = "/home/alvaro/github/LaLigaEstadisticas/real-madrid.png"
 
         fig = self.printPointsClub()
         super(GraphicExcel, self).__init__(fig)
@@ -70,8 +69,11 @@ class GraphicExcel(FigureCanvasQTAgg):
         points = list(points)
 
         for i in range(0, len(points)):
-            if points[i] != '-' and not points[i].isupper():
-                points[i] = float(points[i].replace(",", "."))
+            if type(points[i]) is str and points[i] != '-' and not points[i].isupper():
+                try:
+                    points[i] = float(points[i].replace(",", "."))
+                except ValueError:
+                    print("Error casting points to float")
 
         points = self.detectDelayedAndPlayed(
             points, gamesDelayed, gamesDelayedAndPlayed)
@@ -128,6 +130,14 @@ class GraphicExcel(FigureCanvasQTAgg):
 
         return pointsNew
 
+    def deleteNotPlayed(self, pointsNew):
+        lastElement = 0
+        for i in range(0, len(pointsNew)):
+            if pointsNew[i] != None:
+                lastElement = i
+
+        del pointsNew[lastElement + 1:len(pointsNew)]
+
     def createGraphic(self, pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed):
         """Create graphic."""
         plt.rcParams['toolbar'] = 'None'
@@ -140,6 +150,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         linesCursor = ax.plot(rangePoints, pointsNew, color='k')
         prevElem = self.initPoints
         postElem = None
+        self.deleteNotPlayed(pointsNew)
 
         for i in range(0, len(pointsNew) - 1):
             if pointsNew[i] == None:

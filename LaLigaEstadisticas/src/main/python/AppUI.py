@@ -5,7 +5,10 @@ from functools import partial
 from PyQt5.QtGui import QPixmap
 from GraphicExcel import GraphicExcel
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from PyQt5.QtWidgets import QRadioButton, QComboBox, QWidget, QGridLayout, QMainWindow, QLabel
+from PyQt5.QtWidgets import QRadioButton, QComboBox, QWidget, QGridLayout, QMainWindow, QLabel, QPushButton
+import xlsxwriter
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 
 class AppUI(QMainWindow):
@@ -17,6 +20,12 @@ class AppUI(QMainWindow):
                  firstRowSantander, firstRowSmartbank):
         """Este es el docstring de la funcion."""
         super().__init__()
+        self.scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
+                      "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
+
+        self.creds = ServiceAccountCredentials.from_json_keyfile_name(
+            "/home/alvaro/github/LaLigaEstadisticas/secrets.json", self.scope)
+        self.client = gspread.authorize(self.creds)
         self.listSantander = listClubsSantander
         self.listSantanderDuplicated = listClubsSantander.copy()
         for i in range(0, len(self.listSantanderDuplicated)):
@@ -35,7 +44,7 @@ class AppUI(QMainWindow):
         self.layout = QGridLayout()
         self.sheet = sheet
         width = 1460
-        height = 1024
+        height = 960
         self.setMinimumSize(width, height)
 
         _centralWidget = QWidget()
@@ -43,6 +52,7 @@ class AppUI(QMainWindow):
         self.setCentralWidget(_centralWidget)
 
         self._createBox()
+        self._createButtonDownload()
         self._connectSignals()
         self._radioButtonState = False
         self._radioButton2State = False
@@ -55,6 +65,12 @@ class AppUI(QMainWindow):
                             "Liga Santander", "Liga Smartbank"])
         self.setWindowTitle("LaLigaEstadisticas")
         self.layout.addWidget(self._box, 0, 0)
+
+    def _createButtonDownload(self):
+        """Este es el docstring de la funcion."""
+        self._buttonDownload = QPushButton()
+        self._buttonDownload.setText("Actualizar base de datos")
+        self.layout.addWidget(self._buttonDownload, 5, 0)
 
     def _createRadioButton(self):
         """Este es el docstring de la funcion."""
@@ -214,6 +230,7 @@ class AppUI(QMainWindow):
     def _connectSignals(self):
         """Este es el docstring de la funcion."""
         self._box.currentIndexChanged.connect(self._printBox)
+        self._buttonDownload.clicked.connect(self._downloadSheet)
 
     def _printBox(self):
         """Este es el docstring de la funcion."""
@@ -226,6 +243,19 @@ class AppUI(QMainWindow):
             elif self._box.currentText() == "Liga Smartbank":
                 self._clearRadioButtons()
                 self._createRadioButton2()
+
+    def _downloadSheet(self):
+        sheet = self.client.open("Quiniela 21-22").sheet1
+        allValues = sheet.get_all_values()
+        workbook = xlsxwriter.Workbook(
+            '/home/alvaro/github/LaLigaEstadisticas/Quiniela Script.xlsx')
+        worksheet = workbook.add_worksheet()
+        row = 0
+
+        for col, data in enumerate(allValues):
+            worksheet.write_row(col, row, data)
+
+        workbook.close()
 
     def _drawSantander(self, btnText):
         graphic = GraphicExcel(self.sheet, btnText,
