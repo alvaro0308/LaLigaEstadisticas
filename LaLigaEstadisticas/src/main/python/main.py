@@ -1,8 +1,6 @@
-"""LaLigaEstadisticas App."""
+"""LaLigaEstadisticas App"""
 
-# Filename: LaLigaEstadisticas.py
 # export PYTHONIOENCODING=utf-8
-
 
 import sys
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
@@ -17,14 +15,12 @@ __author__ = "Álvaro"
 
 
 class App:
-    """."""
+    """LaLigaEstadisticas App"""
 
     def __init__(self):
-        """."""
+        """Read clubs and launch Application"""
         workbook = load_workbook(
             filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela Script.xlsx")
-        # workbook = load_workbook(
-        #     filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela 21-22.xlsx")
         self.sheet = workbook.active
 
         maxClubsSantander = 20
@@ -55,7 +51,7 @@ class App:
         sys.exit(self.app.exec_())
 
     def readClubs(self, listClubs, maxClubs, firstRow):
-        """."""
+        """Read clubs from database"""
         for cell in self.sheet.iter_rows(min_row=firstRow,
                                          max_row=maxClubs + firstRow - 1,
                                          min_col=5, max_col=5,
@@ -63,7 +59,7 @@ class App:
             listClubs.append(cell[0])
 
     def readCommentsClubs(self, club):
-        """."""
+        """Read comments clubs from database"""
         counterBlank = 0
         currentRow = 3
         listComments = []
@@ -87,7 +83,7 @@ class App:
         return listComments
 
     def darkMode(self):
-        """."""
+        """Apply dark mode to Application"""
         self.app.setStyle('Fusion')
         palette = QPalette()
         palette.setColor(QPalette.Window, QColor(53, 53, 53))

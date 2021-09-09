@@ -1,4 +1,4 @@
-"""GraphicExcel.py."""
+"""GraphicExcel.py"""
 
 import sys
 import mplcursors
@@ -8,10 +8,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 
 class GraphicExcel(FigureCanvasQTAgg):
-    """Este es el docstring de la funcion."""
+    """"""
 
     def __init__(self, sheet, club, maxClubs, firstRow, listComments, league):
-        """Este es el docstring de la funcion."""
+        """"""
         self.firstRow = firstRow
         self.firstCol = 7
         self.APLZ = -10
@@ -34,7 +34,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         super(GraphicExcel, self).__init__(fig)
 
     def getRowClub(self):
-        """."""
+        """"""
         rowClub = self.firstRow
         for value in self.sheet.iter_rows(min_row=self.firstRow,
                                           max_row=self.firstRow
@@ -49,7 +49,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         return -1
 
     def printPointsClub(self):
-        """Print points clubs."""
+        """Print points clubs"""
         pointsNew = [None] * self.maxGames
         rangePoints = [None] * self.maxGames
         gamesDelayed = []
@@ -86,12 +86,13 @@ class GraphicExcel(FigureCanvasQTAgg):
         return fig
 
     def checkGames(self):
-        """Check number of games."""
+        """Check number of games"""
         if self.maxGames == 1:
             print("Games played is equal to one, can't graphic it")
             sys.exit(1)
 
     def detectDelayedAndPlayed(self, points, gamesDelayed, gamesDelayedAndPlayed):
+        """"""
         for i in range(0, len(points)):
             if type(points[i]) is str and "APLZ J" in points[i]:
                 splitted = points[i].split(" ")
@@ -114,7 +115,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         return [i for i in points if i != self.APLZ]
 
     def createLists(self, points, pointsNew, rangePoints, gamesDelayed):
-        """Create lists points and range."""
+        """Create lists points and range"""
         temp = 100
         for i in range(0, self.maxGames):
             if points[i] == "APLZ":
@@ -131,6 +132,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         return pointsNew
 
     def deleteNotPlayed(self, pointsNew):
+        """"""
         lastElement = 0
         for i in range(0, len(pointsNew)):
             if pointsNew[i] != None:
@@ -139,7 +141,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         del pointsNew[lastElement + 1:len(pointsNew)]
 
     def createGraphic(self, pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed):
-        """Create graphic."""
+        """Create graphic"""
         plt.rcParams['toolbar'] = 'None'
         fig, ax = plt.subplots(figsize=(10, 2))
         fig.tight_layout()
@@ -195,6 +197,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         ax.grid(linestyle='--', linewidth=0.5)
 
         def onAdd(sel):
+            """"""
             if int(sel.target[0]) == 0:
                 text = "Inicio"
             elif int(sel.target[0]) - 1 > len(self.listComments) - 1:
@@ -208,6 +211,7 @@ class GraphicExcel(FigureCanvasQTAgg):
                 arrowstyle="simple", fc="white", alpha=1)
 
         def mplcursorPoints(linesCursor, ax=None, func=None, **kwargs):
+            """"""
             scats = [ax.scatter(x=line.get_xdata(), y=line.get_ydata(),
                                 color='none') for line in linesCursor]
             cursor = mplcursors.cursor(scats, **kwargs)

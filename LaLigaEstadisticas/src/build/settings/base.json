@@ -1,6 +1,6 @@
 {
-    "app_name": "LaLigaEstadisticas",
-    "author": "Alvaro",
-    "main_module": "src/main/python/main.py",
-    "version": "0.0.0"
+  "app_name": "LaLigaEstadisticas",
+  "author": "Alvaro",
+  "main_module": "src/main/python/main.py",
+  "version": "0.0.1"
 }

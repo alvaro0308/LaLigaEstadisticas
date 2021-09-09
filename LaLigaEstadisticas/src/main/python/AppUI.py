@@ -1,4 +1,4 @@
-"""AppUI.py."""
+"""AppUI.py"""
 
 import sip
 from functools import partial
@@ -12,13 +12,13 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 
 class AppUI(QMainWindow):
-    """Este es el docstring de la funcion."""
+    """App User Interface"""
 
     def __init__(self, sheet, listClubsSantander, listClubsSmartbank,
                  dictCommentsSantander, dictCommentsSmartbank,
                  maxClubsSantander, maxClubsSmartbank,
                  firstRowSantander, firstRowSmartbank):
-        """Este es el docstring de la funcion."""
+        """"""
         super().__init__()
         self.scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
                       "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
@@ -58,7 +58,7 @@ class AppUI(QMainWindow):
         self._radioButton2State = False
 
     def _createBox(self):
-        """Este es el docstring de la funcion."""
+        """"""
         self._box = QComboBox()
         self._box.InsertAtTop
         self._box.addItems(["Seleccione un campeonato",
@@ -67,13 +67,13 @@ class AppUI(QMainWindow):
         self.layout.addWidget(self._box, 0, 0)
 
     def _createButtonDownload(self):
-        """Este es el docstring de la funcion."""
+        """"""
         self._buttonDownload = QPushButton()
         self._buttonDownload.setText("Actualizar base de datos")
         self.layout.addWidget(self._buttonDownload, 5, 0)
 
     def _createRadioButton(self):
-        """Este es el docstring de la funcion."""
+        """"""
         self.radioButtons = {}
         radioButtonsLayout = QGridLayout()
         self.radioButtons = {
@@ -142,7 +142,7 @@ class AppUI(QMainWindow):
         self._radioButtonState = True
 
     def _createRadioButton2(self):
-        """Este es el docstring de la funcion."""
+        """"""
         self.radioButtons2 = {}
         radioButtons2Layout = QGridLayout()
         self.radioButtons2 = {
@@ -218,6 +218,7 @@ class AppUI(QMainWindow):
         self._radioButton2State = True
 
     def _clearRadioButtons(self):
+        """"""
         if self._radioButtonState:
             for btnText, pos in self.radioButtons.items():
                 sip.delete(self.radioButtons[btnText])
@@ -228,12 +229,12 @@ class AppUI(QMainWindow):
             self._radioButton2State = False
 
     def _connectSignals(self):
-        """Este es el docstring de la funcion."""
+        """"""
         self._box.currentIndexChanged.connect(self._printBox)
         self._buttonDownload.clicked.connect(self._downloadSheet)
 
     def _printBox(self):
-        """Este es el docstring de la funcion."""
+        """"""
         if self._box.currentText() == "Seleccione un campeonato":
             self._clearRadioButtons()
         else:
@@ -245,6 +246,7 @@ class AppUI(QMainWindow):
                 self._createRadioButton2()
 
     def _downloadSheet(self):
+        """"""
         sheet = self.client.open("Quiniela 21-22").sheet1
         allValues = sheet.get_all_values()
         workbook = xlsxwriter.Workbook(
@@ -258,20 +260,15 @@ class AppUI(QMainWindow):
         workbook.close()
 
     def _drawSantander(self, btnText):
+        """"""
         graphic = GraphicExcel(self.sheet, btnText,
                                self.maxClubsSantander, self.firstRowSantander, self.dictCommentsSantander[btnText], "Santander")
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
 
-        # layout = QtWidgets.QVBoxLayout()
-        # layout.addWidget(toolbar)
-        # widget = QWidget()
-        # widget.setLayout(layout)
-        # self.setCentralWidget(widget)
-        # layout.addWidget(sc)
-
     def _drawSmartbank(self, btnText):
+        """"""
         graphic = GraphicExcel(self.sheet, btnText,
                                self.maxClubsSmartbank, self.firstRowSmartbank, self.dictCommentsSmartbank[btnText], "Smartbank")
         toolbar = NavigationToolbar(graphic, self)
