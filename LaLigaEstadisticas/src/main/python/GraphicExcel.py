@@ -8,10 +8,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 
 class GraphicExcel(FigureCanvasQTAgg):
-    """"""
+    """Create graphic getting data from Excel database"""
 
     def __init__(self, sheet, club, maxClubs, firstRow, listComments, league):
-        """"""
+        """Create figure"""
         self.firstRow = firstRow
         self.firstCol = 7
         self.APLZ = -10
@@ -34,7 +34,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         super(GraphicExcel, self).__init__(fig)
 
     def getRowClub(self):
-        """"""
+        """Get row club from Excel database"""
         rowClub = self.firstRow
         for value in self.sheet.iter_rows(min_row=self.firstRow,
                                           max_row=self.firstRow
@@ -92,7 +92,7 @@ class GraphicExcel(FigureCanvasQTAgg):
             sys.exit(1)
 
     def detectDelayedAndPlayed(self, points, gamesDelayed, gamesDelayedAndPlayed):
-        """"""
+        """Detect delayed and played games"""
         for i in range(0, len(points)):
             if type(points[i]) is str and "APLZ J" in points[i]:
                 splitted = points[i].split(" ")
@@ -132,7 +132,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         return pointsNew
 
     def deleteNotPlayed(self, pointsNew):
-        """"""
+        """Delete not played games"""
         lastElement = 0
         for i in range(0, len(pointsNew)):
             if pointsNew[i] != None:
@@ -197,7 +197,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         ax.grid(linestyle='--', linewidth=0.5)
 
         def onAdd(sel):
-            """"""
+            """Cursor function"""
             if int(sel.target[0]) == 0:
                 text = "Inicio"
             elif int(sel.target[0]) - 1 > len(self.listComments) - 1:
@@ -211,7 +211,7 @@ class GraphicExcel(FigureCanvasQTAgg):
                 arrowstyle="simple", fc="white", alpha=1)
 
         def mplcursorPoints(linesCursor, ax=None, func=None, **kwargs):
-            """"""
+            """Cursor points"""
             scats = [ax.scatter(x=line.get_xdata(), y=line.get_ydata(),
                                 color='none') for line in linesCursor]
             cursor = mplcursors.cursor(scats, **kwargs)
