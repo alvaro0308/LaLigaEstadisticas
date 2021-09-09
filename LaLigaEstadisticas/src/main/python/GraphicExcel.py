@@ -21,12 +21,12 @@ class GraphicExcel(FigureCanvasQTAgg):
         self.maxClubs = maxClubs
         self.league = league
         if self.league == "Santander":
-            self.maxXAxis = 39
             self.maxGames = 38
+            self.maxXAxis = self.maxGames + 1
             self.lastCol = 46
         elif self.league == "Smartbank":
-            self.maxXAxis = 43
             self.maxGames = 42
+            self.maxXAxis = self.maxGames + 1
             self.lastCol = 48
         self.listComments = listComments
 

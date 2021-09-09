@@ -73,7 +73,7 @@ class AppUI(QMainWindow):
         self.layout.addWidget(self._downloadButton, 5, 0)
 
     def _createClubsSantanderButtons(self):
-        """Create clubs buttons"""
+        """Create Santander clubs buttons"""
         self.clubsSantanderButtons = {}
         clubsSantanderButtonsLayout = QGridLayout()
         self.clubsSantanderButtons = {
@@ -142,7 +142,7 @@ class AppUI(QMainWindow):
         self._clubsSantanderButtonsState = True
 
     def _createClubsSmartbankButtons(self):
-        """Create clubs buttons 2"""
+        """Create Smartbank clubs buttons"""
         self.clubsSmarbankButtons = {}
         clubsSmartbankButtonsLayout = QGridLayout()
         self.clubsSmarbankButtons = {

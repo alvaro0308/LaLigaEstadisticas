@@ -102,7 +102,7 @@ class App:
 
 
 def main():
-    """Is main function."""
+    """Is main function"""
     App()
 
 

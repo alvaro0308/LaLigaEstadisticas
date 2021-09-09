@@ -1,0 +1,32 @@
+databasePath: /home/alvaro/github/LaLigaEstadisticas/Quiniela Script.xlsx
+maxClubsSantander: 20
+maxClubsSmartbank: 22
+firstRowSantander: 3
+firstRowSmartbank: 25
+scope: ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
+                      "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
+creds: /home/alvaro/github/LaLigaEstadisticas/secrets.json
+width: 1460
+height: 960
+imageSize: [82.64, 82.64]
+
+path: /home/alvaro/github/LaLigaEstadisticas/
+extensionImage: .png
+buttonClubHeight: 140
+buttonClubWidth: 70
+
+nameDatabase: Quiniela 21-22
+pathDownloadedDatabase: /home/alvaro/github/LaLigaEstadisticas/Quiniela Script.xlsx
+nameDownloadedDatabase: Quiniela Script
+extensionDatabase: .xlsx
+
+initPoints: 100
+firstColPoints: 7
+
+maxGamesSantander: 38
+maxGamesSmartbank: 42
+lastColPointsSantander: 46
+lastColPointsSmartbank: 48
+
+formatDelayedAndPlayed: APLZ J
+formatDelayed: APLZ
