@@ -17,14 +17,13 @@ class AppUI(QMainWindow):
     def __init__(self, sheet, listClubsSantander, listClubsSmartbank,
                  dictCommentsSantander, dictCommentsSmartbank,
                  maxClubsSantander, maxClubsSmartbank,
-                 firstRowSantander, firstRowSmartbank):
+                 firstRowSantander, firstRowSmartbank, params):
         """"""
         super().__init__()
-        self.scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
-                      "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
-
+        self.params = params
+        self.scope = self.params['scope']
         self.creds = ServiceAccountCredentials.from_json_keyfile_name(
-            "/home/alvaro/github/LaLigaEstadisticas/secrets.json", self.scope)
+            self.params['path'] + self.params['creds'], self.scope)
         self.client = gspread.authorize(self.creds)
         self.listSantander = listClubsSantander
         self.listSantanderImage = listClubsSantander.copy()
@@ -43,9 +42,8 @@ class AppUI(QMainWindow):
         self.showMaximized()
         self.layout = QGridLayout()
         self.sheet = sheet
-        width = 1460
-        height = 960
-        self.setMinimumSize(width, height)
+        self.setMinimumSize(
+            self.params['minimumWidthWindow'], self.params['minimumHeightWindow'])
 
         _centralWidget = QWidget()
         _centralWidget.setLayout(self.layout)
@@ -123,14 +121,16 @@ class AppUI(QMainWindow):
             if numButtons % 2 == 0:
                 self.clubsSantanderButtons[btnText] = QLabel(self)
                 pixmap = QPixmap(
-                    '/home/alvaro/github/LaLigaEstadisticas/' + btnText + '.png')
-                pixmap = pixmap.scaled(82.64, 82.64)
+                    self.params['path'] + btnText + self.params['extensionImage'])
+                pixmap = pixmap.scaled(
+                    self.params['imageWidth'], self.params['imageHeight'])
                 self.clubsSantanderButtons[btnText].setPixmap(pixmap)
                 clubsSantanderButtonsLayout.addWidget(self.clubsSantanderButtons[btnText],
                                                       pos[0], pos[1])
             else:
                 self.clubsSantanderButtons[btnText] = QRadioButton("")
-                self.clubsSantanderButtons[btnText].setFixedSize(140, 70)
+                self.clubsSantanderButtons[btnText].setFixedSize(
+                    self.params['buttonClubHeight'], self.params['buttonClubWidth'])
                 self.clubsSantanderButtons[btnText].setChecked(False)
                 clubsSantanderButtonsLayout.addWidget(self.clubsSantanderButtons[btnText],
                                                       pos[0], pos[1])
@@ -196,14 +196,16 @@ class AppUI(QMainWindow):
             if numButtons % 2 == 0:
                 self.clubsSmarbankButtons[btnText] = QLabel(self)
                 pixmap = QPixmap(
-                    '/home/alvaro/github/LaLigaEstadisticas/' + btnText + '.png')
-                pixmap = pixmap.scaled(82.64, 82.64)
+                    self.params['path'] + btnText + self.params['extensionImage'])
+                pixmap = pixmap.scaled(
+                    self.params['imageWidth'], self.params['imageHeight'])
                 self.clubsSmarbankButtons[btnText].setPixmap(pixmap)
                 clubsSmartbankButtonsLayout.addWidget(self.clubsSmarbankButtons[btnText],
                                                       pos[0], pos[1])
             else:
                 self.clubsSmarbankButtons[btnText] = QRadioButton("")
-                self.clubsSmarbankButtons[btnText].setFixedSize(140, 70)
+                self.clubsSmarbankButtons[btnText].setFixedSize(
+                    self.params['buttonClubHeight'], self.params['buttonClubWidth'])
                 self.clubsSmarbankButtons[btnText].setChecked(False)
 
                 clubsSmartbankButtonsLayout.addWidget(self.clubsSmarbankButtons[btnText],
@@ -248,10 +250,10 @@ class AppUI(QMainWindow):
 
     def _downloadSheet(self):
         """Download Google Sheet"""
-        sheet = self.client.open("Quiniela 21-22").sheet1
+        sheet = self.client.open(self.params['nameDatabase']).sheet1
         allValues = sheet.get_all_values()
         workbook = xlsxwriter.Workbook(
-            '/home/alvaro/github/LaLigaEstadisticas/Quiniela Script.xlsx')
+            self.params['path'] + self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
         worksheet = workbook.add_worksheet()
         row = 0
 
@@ -263,7 +265,7 @@ class AppUI(QMainWindow):
     def _drawSantander(self, btnText):
         """Draw Liga Santander graphic"""
         graphic = GraphicExcel(self.sheet, btnText,
-                               self.maxClubsSantander, self.firstRowSantander, self.dictCommentsSantander[btnText], "Santander")
+                               self.maxClubsSantander, self.firstRowSantander, self.dictCommentsSantander[btnText], self.params, "Santander")
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
@@ -271,7 +273,7 @@ class AppUI(QMainWindow):
     def _drawSmartbank(self, btnText):
         """Draw Liga Smartbank graphic"""
         graphic = GraphicExcel(self.sheet, btnText,
-                               self.maxClubsSmartbank, self.firstRowSmartbank, self.dictCommentsSmartbank[btnText], "Smartbank")
+                               self.maxClubsSmartbank, self.firstRowSmartbank, self.dictCommentsSmartbank[btnText], self.params, "Smartbank")
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)

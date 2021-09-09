@@ -10,24 +10,25 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 class GraphicExcel(FigureCanvasQTAgg):
     """Create graphic getting data from Excel database"""
 
-    def __init__(self, sheet, club, maxClubs, firstRow, listComments, league):
+    def __init__(self, sheet, club, maxClubs, firstRow, listComments, params, league):
         """Create figure"""
+        self.params = params
         self.firstRow = firstRow
-        self.firstCol = 7
+        self.firstCol = self.params['firstColPoints']
         self.APLZ = -10
-        self.initPoints = 100
+        self.initPoints = self.params['initPoints']
         self.sheet = sheet
         self.club = club
         self.maxClubs = maxClubs
         self.league = league
         if self.league == "Santander":
-            self.maxGames = 38
+            self.maxGames = self.params['maxGamesSantander']
             self.maxXAxis = self.maxGames + 1
-            self.lastCol = 46
+            self.lastCol = self.params['lastColPointsSantander']
         elif self.league == "Smartbank":
-            self.maxGames = 42
+            self.maxGames = self.params['maxGamesSmartbank']
             self.maxXAxis = self.maxGames + 1
-            self.lastCol = 48
+            self.lastCol = self.params['lastColPointsSmartbank']
         self.listComments = listComments
 
         fig = self.printPointsClub()
@@ -94,7 +95,7 @@ class GraphicExcel(FigureCanvasQTAgg):
     def detectDelayedAndPlayed(self, points, gamesDelayed, gamesDelayedAndPlayed):
         """Detect delayed and played games"""
         for i in range(0, len(points)):
-            if type(points[i]) is str and "APLZ J" in points[i]:
+            if type(points[i]) is str and self.params['formatDelayedAndPlayed'] in points[i]:
                 splitted = points[i].split(" ")
                 if "J" in splitted[1]:
                     roundDelayed = int(splitted[1].replace('J', ''))
@@ -118,7 +119,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         """Create lists points and range"""
         temp = 100
         for i in range(0, self.maxGames):
-            if points[i] == "APLZ":
+            if points[i] == self.params['formatDelayed']:
                 pointsNew[i] = None
                 gamesDelayed.append(i)
                 continue

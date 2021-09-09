@@ -3,6 +3,7 @@
 # export PYTHONIOENCODING=utf-8
 
 import sys
+import yaml
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from AppUI import AppUI
 from PyQt5.QtCore import Qt
@@ -11,7 +12,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QPalette, QColor
 
 __version__ = "alpha"
-__author__ = "Álvaro"
+__author__ = "Alvaro"
 
 
 class App:
@@ -19,14 +20,17 @@ class App:
 
     def __init__(self):
         """Read clubs and launch Application"""
+        with open('config/config.yaml') as f:
+            self.params = yaml.load(f, Loader=yaml.FullLoader)
+
         workbook = load_workbook(
-            filename="/home/alvaro/github/LaLigaEstadisticas/Quiniela Script.xlsx")
+            filename=self.params['path'] + self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
         self.sheet = workbook.active
 
-        maxClubsSantander = 20
-        maxClubsSmartbank = 22
-        firstRowSantander = 3
-        firstRowSmartbank = 25
+        maxClubsSantander = self.params['maxClubsSantander']
+        maxClubsSmartbank = self.params['maxClubsSmartbank']
+        firstRowSantander = self.params['firstRowSantander']
+        firstRowSmartbank = self.params['firstRowSmartbank']
 
         listClubsSantander = []
         listClubsSmartbank = []
@@ -46,7 +50,7 @@ class App:
         self.darkMode()
         view = AppUI(self.sheet, listClubsSantander, listClubsSmartbank, dictCommentsSantander, dictCommentsSmartbank,
                      maxClubsSantander, maxClubsSmartbank,
-                     firstRowSantander, firstRowSmartbank)
+                     firstRowSantander, firstRowSmartbank, self.params)
         view.show()
         sys.exit(self.app.exec_())
 
