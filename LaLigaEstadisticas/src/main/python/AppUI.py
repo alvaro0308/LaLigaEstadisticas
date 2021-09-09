@@ -23,7 +23,7 @@ class AppUI(QMainWindow):
         self.params = params
         self.scope = self.params['scope']
         self.creds = ServiceAccountCredentials.from_json_keyfile_name(
-            self.params['path'] + self.params['creds'], self.scope)
+            self.params['path'] + self.params['keysPath'] + self.params['creds'], self.scope)
         self.client = gspread.authorize(self.creds)
         self.listSantander = listClubsSantander
         self.listSantanderImage = listClubsSantander.copy()
@@ -121,7 +121,7 @@ class AppUI(QMainWindow):
             if numButtons % 2 == 0:
                 self.clubsSantanderButtons[btnText] = QLabel(self)
                 pixmap = QPixmap(
-                    self.params['path'] + btnText + self.params['extensionImage'])
+                    self.params['path'] + self.params['resourcesPath'] + btnText + self.params['extensionImage'])
                 pixmap = pixmap.scaled(
                     self.params['imageWidth'], self.params['imageHeight'])
                 self.clubsSantanderButtons[btnText].setPixmap(pixmap)
@@ -196,7 +196,7 @@ class AppUI(QMainWindow):
             if numButtons % 2 == 0:
                 self.clubsSmarbankButtons[btnText] = QLabel(self)
                 pixmap = QPixmap(
-                    self.params['path'] + btnText + self.params['extensionImage'])
+                    self.params['path'] + self.params['resourcesPath'] + btnText + self.params['extensionImage'])
                 pixmap = pixmap.scaled(
                     self.params['imageWidth'], self.params['imageHeight'])
                 self.clubsSmarbankButtons[btnText].setPixmap(pixmap)
@@ -253,7 +253,7 @@ class AppUI(QMainWindow):
         sheet = self.client.open(self.params['nameDatabase']).sheet1
         allValues = sheet.get_all_values()
         workbook = xlsxwriter.Workbook(
-            self.params['path'] + self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
+            self.params['path'] + self.params['databasePath'] + self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
         worksheet = workbook.add_worksheet()
         row = 0
 

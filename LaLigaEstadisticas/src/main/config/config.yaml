@@ -1,8 +1,11 @@
 scope: ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
                       "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
-creds: secrets.json
+creds: keys.json
 
-path: /home/alvaro/github/LaLigaEstadisticas/
+path: /home/alvaro/github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/
+resourcesPath: resources/
+keysPath: keys/
+databasePath: database/
 nameDatabase: Quiniela 21-22
 nameDownloadedDatabase: Quiniela Script
 extensionDatabase: .xlsx

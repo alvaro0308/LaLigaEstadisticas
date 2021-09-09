@@ -20,11 +20,11 @@ class App:
 
     def __init__(self):
         """Read clubs and launch Application"""
-        with open('config/config.yaml') as f:
+        with open('../config/config.yaml') as f:
             self.params = yaml.load(f, Loader=yaml.FullLoader)
 
         workbook = load_workbook(
-            filename=self.params['path'] + self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
+            filename=self.params['path'] + self.params['databasePath'] + self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
         self.sheet = workbook.active
 
         maxClubsSantander = self.params['maxClubsSantander']
