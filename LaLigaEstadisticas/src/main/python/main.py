@@ -108,8 +108,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # appctxt = ApplicationContext()
-    # window = QMainWindow()
-    # window.resize(250, 150)
-    # window.show()
-    # exit_code = appctxt.app.exec_()
