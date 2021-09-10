@@ -20,7 +20,7 @@ class App:
 
     def __init__(self):
         """Read clubs and launch Application"""
-        with open('../config/config.yaml') as f:
+        with open('/home/alvaro/github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/config/config.yaml') as f:
             self.params = yaml.load(f, Loader=yaml.FullLoader)
 
         workbook = load_workbook(
