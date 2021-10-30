@@ -6,6 +6,8 @@ path: /home/alvaro/github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/
 resourcesPath: resources/
 keysPath: keys/
 databasePath: database/
+clubsPath: clubs/
+mistersPath: misters/
 nameDatabase: Quiniela 21-22
 nameDownloadedDatabase: Quiniela Script
 extensionDatabase: .xlsx

@@ -5,12 +5,16 @@ import mplcursors
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.offsetbox import TextArea, DrawingArea, OffsetImage, AnnotationBbox
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 
 class GraphicExcel(FigureCanvasQTAgg):
     """Create graphic getting data from Excel database"""
 
-    def __init__(self, sheet, club, maxClubs, firstRow, listComments, params, league):
+    def __init__(self, sheet, club, maxClubs, firstRow, listMisters, listComments, params, league):
         """Create figure"""
         self.params = params
         self.firstRow = firstRow
@@ -29,10 +33,31 @@ class GraphicExcel(FigureCanvasQTAgg):
             self.maxGames = self.params['maxGamesSmartbank']
             self.maxXAxis = self.maxGames + 1
             self.lastCol = self.params['lastColPointsSmartbank']
+
+        self.listMisters = listMisters.split()
+        for i in range(0, len(self.listMisters)):
+            self.listMisters[i] = self.listMisters[i].replace(":", "")
+            self.listMisters[i] = self.listMisters[i].replace(",", "")
+        print(self.listMisters)
+
+        self.getPathsMisters()
+
         self.listComments = listComments
 
         fig = self.printPointsClub()
         super(GraphicExcel, self).__init__(fig)
+
+    def getPathsMisters(self):
+        path = str(self.params['path']) + \
+            str(self.params['resourcesPath'] +
+                str(self.params['mistersPath']) + str(self.club))
+        print(path)
+        for i in range(0, len(self.listMisters), 2):
+            print(str(self.listMisters[i]) + " " +
+                  str(self.listMisters[i + 1]))
+            self.listMisters[i + 1] = path + str(self.listMisters[i + 1]) + \
+                str(self.params['extensionImage'])
+        print(self.listMisters)
 
     def getRowClub(self):
         """Get row club from Excel database"""
@@ -196,6 +221,36 @@ class GraphicExcel(FigureCanvasQTAgg):
         ax.set_xlabel('Jornadas', fontsize=12)
         ax.set_title(self.club, fontsize=12)
         ax.grid(linestyle='--', linewidth=0.5)
+
+        for i in range(0, len(self.listMisters), 2):
+            if "!!" in self.listMisters[i + 1]:
+                zoom = 0.7
+                self.listMisters[i + 1] = self.listMisters[i +
+                                                           1].replace("!!", "")
+            elif "!" in self.listMisters[i + 1]:
+                zoom = 0.4
+                self.listMisters[i + 1] = self.listMisters[i +
+                                                           1].replace("!", "")
+            else:
+                zoom = 0.3
+
+            imageMister = mpimg.imread(self.listMisters[i + 1])
+            imagebox = OffsetImage(imageMister, zoom=zoom)
+
+            if int(self.listMisters[i]) == 1:
+                start = -1
+            else:
+                start = 0
+                ax.arrow(int(self.listMisters[i]) + start, 109, 0, -7, head_width=0.5,
+                         head_length=1, fc='k', ec='k')
+                start = -1.5
+            ab = AnnotationBbox(
+                imagebox, (int(self.listMisters[i]) + start + 1.5, 109), frameon=False)
+
+            ax.add_artist(ab)
+
+        plt.grid()
+        plt.draw()
 
         def onAdd(sel):
             """Cursor function"""

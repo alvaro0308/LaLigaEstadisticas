@@ -15,6 +15,7 @@ class AppUI(QMainWindow):
     """App User Interface"""
 
     def __init__(self, sheet, listClubsSantander, listClubsSmartbank,
+                 dictMistersSantander, dictMistersSmartbank,
                  dictCommentsSantander, dictCommentsSmartbank,
                  maxClubsSantander, maxClubsSmartbank,
                  firstRowSantander, firstRowSmartbank, params):
@@ -25,6 +26,8 @@ class AppUI(QMainWindow):
         self.creds = ServiceAccountCredentials.from_json_keyfile_name(
             self.params['path'] + self.params['keysPath'] + self.params['creds'], self.scope)
         self.client = gspread.authorize(self.creds)
+        self.dictMistersSantander = dictMistersSantander
+        self.dictMistersSmartbank = dictMistersSmartbank
         self.listSantander = listClubsSantander
         self.listSantanderImage = listClubsSantander.copy()
         for i in range(0, len(self.listSantanderImage)):
@@ -121,7 +124,7 @@ class AppUI(QMainWindow):
             if numButtons % 2 == 0:
                 self.clubsSantanderButtons[btnText] = QLabel(self)
                 pixmap = QPixmap(
-                    self.params['path'] + self.params['resourcesPath'] + btnText + self.params['extensionImage'])
+                    self.params['path'] + self.params['resourcesPath'] + self.params['clubsPath'] + btnText + self.params['extensionImage'])
                 pixmap = pixmap.scaled(
                     self.params['imageWidth'], self.params['imageHeight'])
                 self.clubsSantanderButtons[btnText].setPixmap(pixmap)
@@ -196,7 +199,7 @@ class AppUI(QMainWindow):
             if numButtons % 2 == 0:
                 self.clubsSmarbankButtons[btnText] = QLabel(self)
                 pixmap = QPixmap(
-                    self.params['path'] + self.params['resourcesPath'] + btnText + self.params['extensionImage'])
+                    self.params['path'] + self.params['resourcesPath'] + self.params['clubsPath'] + btnText + self.params['extensionImage'])
                 pixmap = pixmap.scaled(
                     self.params['imageWidth'], self.params['imageHeight'])
                 self.clubsSmarbankButtons[btnText].setPixmap(pixmap)
@@ -265,7 +268,7 @@ class AppUI(QMainWindow):
     def _drawSantander(self, btnText):
         """Draw Liga Santander graphic"""
         graphic = GraphicExcel(self.sheet, btnText,
-                               self.maxClubsSantander, self.firstRowSantander, self.dictCommentsSantander[btnText], self.params, "Santander")
+                               self.maxClubsSantander, self.firstRowSantander, self.dictMistersSantander[btnText], self.dictCommentsSantander[btnText], self.params, "Santander")
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
@@ -273,7 +276,7 @@ class AppUI(QMainWindow):
     def _drawSmartbank(self, btnText):
         """Draw Liga Smartbank graphic"""
         graphic = GraphicExcel(self.sheet, btnText,
-                               self.maxClubsSmartbank, self.firstRowSmartbank, self.dictCommentsSmartbank[btnText], self.params, "Smartbank")
+                               self.maxClubsSmartbank, self.firstRowSmartbank, self.dictMistersSmartbank[btnText], self.dictCommentsSmartbank[btnText], self.params, "Smartbank")
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)

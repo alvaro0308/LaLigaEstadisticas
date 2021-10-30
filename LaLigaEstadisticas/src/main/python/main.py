@@ -34,12 +34,20 @@ class App:
 
         listClubsSantander = []
         listClubsSmartbank = []
+        dictMistersSantander = {}
+        dictMistersSmartbank = {}
         dictCommentsSantander = {}
         dictCommentsSmartbank = {}
         self.readClubs(listClubsSantander, maxClubsSantander,
                        firstRowSantander)
         self.readClubs(listClubsSmartbank, maxClubsSmartbank,
                        firstRowSmartbank)
+
+        self.readMisters(dictMistersSantander, maxClubsSantander,
+                         firstRowSantander)
+        self.readMisters(dictMistersSmartbank, maxClubsSmartbank,
+                         firstRowSmartbank)
+
         for clubSantander in listClubsSantander:
             dictCommentsSantander[clubSantander] = self.readCommentsClubs(
                 clubSantander)
@@ -48,7 +56,7 @@ class App:
                 clubSmartbank)
         self.app = QApplication(sys.argv)
         self.darkMode()
-        view = AppUI(self.sheet, listClubsSantander, listClubsSmartbank, dictCommentsSantander, dictCommentsSmartbank,
+        view = AppUI(self.sheet, listClubsSantander, listClubsSmartbank, dictMistersSantander, dictMistersSmartbank, dictCommentsSantander, dictCommentsSmartbank,
                      maxClubsSantander, maxClubsSmartbank,
                      firstRowSantander, firstRowSmartbank, self.params)
         view.show()
@@ -61,6 +69,23 @@ class App:
                                          min_col=5, max_col=5,
                                          values_only=True):
             listClubs.append(cell[0])
+
+    def readMisters(self, dictMisters, maxClubs, firstRow):
+        """Read misters from database"""
+        listNamesMister = []
+        for cell in self.sheet.iter_rows(min_row=firstRow,
+                                         max_row=maxClubs + firstRow - 1,
+                                         min_col=5, max_col=5,
+                                         values_only=True):
+            listNamesMister.append(cell[0])
+
+        currentMister = 0
+        for cell in self.sheet.iter_rows(min_row=firstRow,
+                                         max_row=maxClubs + firstRow - 1,
+                                         min_col=6, max_col=6,
+                                         values_only=True):
+            dictMisters[listNamesMister[currentMister]] = cell[0]
+            currentMister += 1
 
     def readCommentsClubs(self, club):
         """Read comments clubs from database"""
