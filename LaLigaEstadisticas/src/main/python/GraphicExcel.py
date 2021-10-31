@@ -4,11 +4,9 @@ import sys
 import mplcursors
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.offsetbox import TextArea, DrawingArea, OffsetImage, AnnotationBbox
-
-import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
 
 class GraphicExcel(FigureCanvasQTAgg):
