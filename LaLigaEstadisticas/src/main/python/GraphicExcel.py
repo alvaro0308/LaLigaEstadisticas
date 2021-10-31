@@ -38,10 +38,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         for i in range(0, len(self.listMisters)):
             self.listMisters[i] = self.listMisters[i].replace(":", "")
             self.listMisters[i] = self.listMisters[i].replace(",", "")
-        print(self.listMisters)
-
         self.getPathsMisters()
-
         self.listComments = listComments
 
         fig = self.printPointsClub()
@@ -51,13 +48,9 @@ class GraphicExcel(FigureCanvasQTAgg):
         path = str(self.params['path']) + \
             str(self.params['resourcesPath'] +
                 str(self.params['mistersPath']) + str(self.club))
-        print(path)
         for i in range(0, len(self.listMisters), 2):
-            print(str(self.listMisters[i]) + " " +
-                  str(self.listMisters[i + 1]))
             self.listMisters[i + 1] = path + str(self.listMisters[i + 1]) + \
                 str(self.params['extensionImage'])
-        print(self.listMisters)
 
     def getRowClub(self):
         """Get row club from Excel database"""
@@ -210,7 +203,8 @@ class GraphicExcel(FigureCanvasQTAgg):
             ax.scatter(gamesDelayedAndPlayed[l],
                        pointsNew[gamesDelayedAndPlayed[l]], color='g')
             ax.plot(
-                [gamesDelayedAndPlayed[l] - 1, gamesDelayedAndPlayed[l]], [pointsNew[gamesDelayedAndPlayed[l] - 1], pointsNew[gamesDelayedAndPlayed[l]]], color='g')
+                [gamesDelayedAndPlayed[l] - 1, gamesDelayedAndPlayed[l]],
+                [pointsNew[gamesDelayedAndPlayed[l] - 1], pointsNew[gamesDelayedAndPlayed[l]]], color='g')
 
         ax.set_xlim(0, self.maxXAxis)
         ax.set_ylim([self.initPoints - 10, self.initPoints + 10])
@@ -224,33 +218,36 @@ class GraphicExcel(FigureCanvasQTAgg):
 
         for i in range(0, len(self.listMisters), 2):
             if "!!" in self.listMisters[i + 1]:
-                zoom = 0.7
+                zoom = self.params['highZoom']
                 self.listMisters[i + 1] = self.listMisters[i +
                                                            1].replace("!!", "")
             elif "!" in self.listMisters[i + 1]:
-                zoom = 0.4
+                zoom = self.params['mediumZoom']
                 self.listMisters[i + 1] = self.listMisters[i +
                                                            1].replace("!", "")
+            elif "¡" in self.listMisters[i + 1]:
+                zoom = self.params['verySmallZoom']
+                self.listMisters[i + 1] = self.listMisters[i +
+                                                           1].replace("¡", "")
             else:
-                zoom = 0.3
+                zoom = self.params['smallZoom']
 
             imageMister = mpimg.imread(self.listMisters[i + 1])
             imagebox = OffsetImage(imageMister, zoom=zoom)
 
             if int(self.listMisters[i]) == 1:
-                start = -1
+                start = self.params['misterPosStart']
             else:
                 start = 0
-                ax.arrow(int(self.listMisters[i]) + start, 109, 0, -7, head_width=0.5,
-                         head_length=1, fc='k', ec='k')
-                start = -1.5
+                ax.arrow(int(self.listMisters[i]) + start, self.params['misterPosHeight'],
+                         self.params['arrowX'], self.params['arrowY'], head_width=self.params['arrowHeadWidth'],
+                         head_length=self.params['arrowHeadLength'], fc='k', ec='k')
+                start = -self.params['misterIncrement']
             ab = AnnotationBbox(
-                imagebox, (int(self.listMisters[i]) + start + 1.5, 109), frameon=False)
+                imagebox, (int(self.listMisters[i]) + start + self.params['misterIncrement'],
+                           self.params['misterPosHeight']), frameon=False)
 
             ax.add_artist(ab)
-
-        plt.grid()
-        plt.draw()
 
         def onAdd(sel):
             """Cursor function"""

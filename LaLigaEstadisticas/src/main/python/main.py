@@ -24,7 +24,8 @@ class App:
             self.params = yaml.load(f, Loader=yaml.FullLoader)
 
         workbook = load_workbook(
-            filename=self.params['path'] + self.params['databasePath'] + self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
+            filename=self.params['path'] + self.params['databasePath']
+            + self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
         self.sheet = workbook.active
 
         maxClubsSantander = self.params['maxClubsSantander']
@@ -56,7 +57,9 @@ class App:
                 clubSmartbank)
         self.app = QApplication(sys.argv)
         self.darkMode()
-        view = AppUI(self.sheet, listClubsSantander, listClubsSmartbank, dictMistersSantander, dictMistersSmartbank, dictCommentsSantander, dictCommentsSmartbank,
+        view = AppUI(self.sheet, listClubsSantander, listClubsSmartbank,
+                     dictMistersSantander, dictMistersSmartbank,
+                     dictCommentsSantander, dictCommentsSmartbank,
                      maxClubsSantander, maxClubsSmartbank,
                      firstRowSantander, firstRowSmartbank, self.params)
         view.show()
@@ -104,9 +107,9 @@ class App:
             clubs = str(self.sheet.cell(currentRow, 1).value).split(" - ")
             for i in clubs:
                 if i == club:
-                    listComments.append(str(self.sheet.cell(currentRow, 1).
-                                            value) + ": " + str(cell[0]) + "_ " + str(self.sheet.cell(currentRow, 3).
-                                                                                      value))
+                    listComments.append(str(self.sheet.cell(currentRow, 1).value) + ": "
+                                        + str(cell[0]) + "_ "
+                                        + str(self.sheet.cell(currentRow, 3).value))
             currentRow += 1
 
         return listComments

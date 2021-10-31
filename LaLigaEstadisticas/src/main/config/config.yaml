@@ -31,5 +31,18 @@ imageHeight: 82.64
 buttonClubHeight: 140
 buttonClubWidth: 70
 
+misterPosHeight: 109
+misterPosStart: -1
+misterIncrement: 1.5
+arrowX: 0
+arrowY: -7
+arrowHeadWidth: 0.5 
+arrowHeadLength: 1
+
+verySmallZoom: 0.2
+smallZoom: 0.3
+mediumZoom: 0.4
+highZoom: 0.7
+
 formatDelayedAndPlayed: APLZ J
 formatDelayed: APLZ

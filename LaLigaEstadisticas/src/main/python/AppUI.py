@@ -124,7 +124,8 @@ class AppUI(QMainWindow):
             if numButtons % 2 == 0:
                 self.clubsSantanderButtons[btnText] = QLabel(self)
                 pixmap = QPixmap(
-                    self.params['path'] + self.params['resourcesPath'] + self.params['clubsPath'] + btnText + self.params['extensionImage'])
+                    self.params['path'] + self.params['resourcesPath'] +
+                    self.params['clubsPath'] + btnText + self.params['extensionImage'])
                 pixmap = pixmap.scaled(
                     self.params['imageWidth'], self.params['imageHeight'])
                 self.clubsSantanderButtons[btnText].setPixmap(pixmap)
@@ -199,7 +200,8 @@ class AppUI(QMainWindow):
             if numButtons % 2 == 0:
                 self.clubsSmarbankButtons[btnText] = QLabel(self)
                 pixmap = QPixmap(
-                    self.params['path'] + self.params['resourcesPath'] + self.params['clubsPath'] + btnText + self.params['extensionImage'])
+                    self.params['path'] + self.params['resourcesPath'] +
+                    self.params['clubsPath'] + btnText + self.params['extensionImage'])
                 pixmap = pixmap.scaled(
                     self.params['imageWidth'], self.params['imageHeight'])
                 self.clubsSmarbankButtons[btnText].setPixmap(pixmap)
@@ -256,7 +258,8 @@ class AppUI(QMainWindow):
         sheet = self.client.open(self.params['nameDatabase']).sheet1
         allValues = sheet.get_all_values()
         workbook = xlsxwriter.Workbook(
-            self.params['path'] + self.params['databasePath'] + self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
+            self.params['path'] + self.params['databasePath'] +
+            self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
         worksheet = workbook.add_worksheet()
         row = 0
 
@@ -268,7 +271,9 @@ class AppUI(QMainWindow):
     def _drawSantander(self, btnText):
         """Draw Liga Santander graphic"""
         graphic = GraphicExcel(self.sheet, btnText,
-                               self.maxClubsSantander, self.firstRowSantander, self.dictMistersSantander[btnText], self.dictCommentsSantander[btnText], self.params, "Santander")
+                               self.maxClubsSantander, self.firstRowSantander,
+                               self.dictMistersSantander[btnText], self.dictCommentsSantander[btnText],
+                               self.params, "Santander")
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
@@ -276,7 +281,9 @@ class AppUI(QMainWindow):
     def _drawSmartbank(self, btnText):
         """Draw Liga Smartbank graphic"""
         graphic = GraphicExcel(self.sheet, btnText,
-                               self.maxClubsSmartbank, self.firstRowSmartbank, self.dictMistersSmartbank[btnText], self.dictCommentsSmartbank[btnText], self.params, "Smartbank")
+                               self.maxClubsSmartbank, self.firstRowSmartbank,
+                               self.dictMistersSmartbank[btnText], self.dictCommentsSmartbank[btnText],
+                               self.params, "Smartbank")
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
