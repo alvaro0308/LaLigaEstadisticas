@@ -31,11 +31,11 @@ imageHeight: 82.64
 buttonClubHeight: 140
 buttonClubWidth: 70
 
-misterPosHeight: 109
+misterPosHeight: 111
 misterPosStart: -1
 misterIncrement: 1.5
 arrowX: 0
-arrowY: -7
+arrowY: -10
 arrowHeadWidth: 0.5 
 arrowHeadLength: 1
 

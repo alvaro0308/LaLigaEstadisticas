@@ -98,12 +98,13 @@ class App:
         for cell in self.sheet.iter_rows(min_row=3,
                                          min_col=2, max_col=2,
                                          values_only=True):
+
             if cell[0] is None:
                 counterBlank += 1
             else:
                 counterBlank = 0
-            if counterBlank > 2:
-                break
+            # if counterBlank > 2:
+            #     break
             clubs = str(self.sheet.cell(currentRow, 1).value).split(" - ")
             for i in clubs:
                 if i == club:

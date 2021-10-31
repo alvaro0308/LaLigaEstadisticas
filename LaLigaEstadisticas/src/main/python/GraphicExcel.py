@@ -207,7 +207,7 @@ class GraphicExcel(FigureCanvasQTAgg):
                 [pointsNew[gamesDelayedAndPlayed[l] - 1], pointsNew[gamesDelayedAndPlayed[l]]], color='g')
 
         ax.set_xlim(0, self.maxXAxis)
-        ax.set_ylim([self.initPoints - 10, self.initPoints + 10])
+        ax.set_ylim([self.initPoints - 15, self.initPoints + 15])
         ax.set_facecolor('xkcd:gray')
         ax.xaxis.set_major_locator(ticker.MultipleLocator(2))
         ax.yaxis.set_major_locator(ticker.MultipleLocator(2))
