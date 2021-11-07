@@ -4,6 +4,7 @@
 
 import sys
 import yaml
+import platform
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from AppUI import AppUI
 from PyQt5.QtCore import Qt
@@ -20,8 +21,13 @@ class App:
 
     def __init__(self):
         """Read clubs and launch Application"""
-        with open('/home/alvaro/github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/config/config.yaml') as f:
+        with open('C:/Users/Alvaro/Documents/Github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/config/config.yaml') as f:
             self.params = yaml.load(f, Loader=yaml.FullLoader)
+        currentOs = platform.system()
+        if currentOs == 'Windows':
+            self.params['path'] = self.params['pathWindows']
+        elif currentOs == 'Linux':
+            self.params['path'] = self.params['pathLinux']
 
         workbook = load_workbook(
             filename=self.params['path'] + self.params['databasePath']

@@ -42,15 +42,14 @@ class AppUI(QMainWindow):
         self.maxClubsSmartbank = maxClubsSmartbank
         self.firstRowSantander = firstRowSantander
         self.firstRowSmartbank = firstRowSmartbank
-        self.showMaximized()
         self.layout = QGridLayout()
         self.sheet = sheet
         self.setMinimumSize(
             self.params['minimumWidthWindow'], self.params['minimumHeightWindow'])
-
         _centralWidget = QWidget()
         _centralWidget.setLayout(self.layout)
         self.setCentralWidget(_centralWidget)
+        self.showMaximized()
 
         self._createChampionshipMenu()
         self._createDownloadButton()

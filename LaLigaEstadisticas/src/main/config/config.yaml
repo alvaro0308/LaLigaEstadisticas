@@ -2,7 +2,8 @@ scope: ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/aut
                       "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 creds: keys.json
 
-path: /home/alvaro/github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/
+pathWindows: C:/Users/Alvaro/Documents/Github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/
+pathLinux: /home/alvaro/github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/
 resourcesPath: resources/
 keysPath: keys/
 databasePath: database/
