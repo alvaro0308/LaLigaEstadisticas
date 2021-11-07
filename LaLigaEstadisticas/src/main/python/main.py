@@ -21,12 +21,14 @@ class App:
 
     def __init__(self):
         """Read clubs and launch Application"""
-        with open('C:/Users/Alvaro/Documents/Github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/config/config.yaml') as f:
-            self.params = yaml.load(f, Loader=yaml.FullLoader)
         currentOs = platform.system()
         if currentOs == 'Windows':
+            with open('C:/Users/Alvaro/Documents/Github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/config/config.yaml') as f:
+                self.params = yaml.load(f, Loader=yaml.FullLoader)
             self.params['path'] = self.params['pathWindows']
         elif currentOs == 'Linux':
+            with open('/home/alvaro/github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/config/config.yaml') as f:
+                self.params = yaml.load(f, Loader=yaml.FullLoader)
             self.params['path'] = self.params['pathLinux']
 
         workbook = load_workbook(
