@@ -1,6 +1,6 @@
 # LaLigaEstadisticas
 
-# Instructions to generate .deb:
+### Instructions to generate .deb:
 fbs run
 
 fbs freeze
