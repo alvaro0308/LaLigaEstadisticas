@@ -23,11 +23,11 @@ class App:
         """Read clubs and launch Application"""
         currentOs = platform.system()
         if currentOs == 'Windows':
-            with open('C:/Users/Alvaro/Documents/Github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/config/config.yaml') as f:
+            with open('C:/Users/Alvaro/Documents/Github/LaLigaEstadisticas/src/main/config/config.yaml') as f:
                 self.params = yaml.load(f, Loader=yaml.FullLoader)
             self.params['path'] = self.params['pathWindows']
         elif currentOs == 'Linux':
-            with open('/home/alvaro/github/LaLigaEstadisticas/LaLigaEstadisticas/src/main/config/config.yaml') as f:
+            with open('/home/alvaro/github/LaLigaEstadisticas/src/main/config/config.yaml') as f:
                 self.params = yaml.load(f, Loader=yaml.FullLoader)
             self.params['path'] = self.params['pathLinux']
 
