@@ -7,4 +7,4 @@ fbs freeze
 
 fbs installer
 
-![](https://github.com/alvaro0308/LaLigaEstadisticas/blob/master/LaLigaEstadisticas/src/main/resources/gif.gif)
+![](https://github.com/alvaro0308/LaLigaEstadisticas/blob/master/src/main/resources/gif.gif)
