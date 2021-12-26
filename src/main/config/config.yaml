@@ -10,7 +10,7 @@ databasePath: database/
 clubsPath: clubs/
 mistersPath: misters/
 nameDatabase: Quiniela 21-22
-nameDownloadedDatabase: Quiniela Script
+nameDownloadedDatabase: database
 extensionDatabase: .xlsx
 extensionImage: .png
 
@@ -35,10 +35,13 @@ buttonClubWidth: 70
 misterPosHeight: 111
 misterPosStart: -1
 misterIncrement: 1.5
+misterNearIncrement: -3
 arrowX: 0
-arrowY: -10
+arrowY: -5
 arrowHeadWidth: 0.5 
 arrowHeadLength: 1
+arrowHeight: 106
+arrowIncrement: 0.45
 
 verySmallZoom: 0.2
 smallZoom: 0.3

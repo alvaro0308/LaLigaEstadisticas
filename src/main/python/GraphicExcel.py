@@ -169,6 +169,8 @@ class GraphicExcel(FigureCanvasQTAgg):
         linesCursor = ax.plot(rangePoints, pointsNew, color='k')
         prevElem = self.initPoints
         postElem = None
+        increment = 0
+        nextIncrement = 0
         self.deleteNotPlayed(pointsNew)
 
         for i in range(0, len(pointsNew) - 1):
@@ -232,18 +234,38 @@ class GraphicExcel(FigureCanvasQTAgg):
 
             imageMister = mpimg.imread(self.listMisters[i + 1])
             imagebox = OffsetImage(imageMister, zoom=zoom)
+            increment = 0
+
+            if (i / 2) < (len(self.listMisters) / 2) - 1:
+                if (int(self.listMisters[i + 2]) - int(self.listMisters[i])) < 4:
+                    increment = self.params['misterNearIncrement']
 
             if int(self.listMisters[i]) == 1:
                 start = self.params['misterPosStart']
             else:
                 start = 0
-                ax.arrow(int(self.listMisters[i]) + start, self.params['misterPosHeight'],
-                         self.params['arrowX'], self.params['arrowY'], head_width=self.params['arrowHeadWidth'],
+                currentNextIncrement = 0
+                currentIncrement = 0
+                if increment != 0:
+                    currentIncrement = increment + \
+                        self.params['arrowIncrement']
+                elif nextIncrement != 0:
+                    currentNextIncrement = nextIncrement - \
+                        self.params['arrowIncrement']
+
+                ax.arrow(int(self.listMisters[i]) + start + increment + nextIncrement, self.params['arrowHeight'],
+                         self.params['arrowX'] - currentIncrement - currentNextIncrement, self.params['arrowY'], head_width=self.params['arrowHeadWidth'],
                          head_length=self.params['arrowHeadLength'], fc='k', ec='k')
                 start = -self.params['misterIncrement']
+
             ab = AnnotationBbox(
-                imagebox, (int(self.listMisters[i]) + start + self.params['misterIncrement'],
+                imagebox, (int(self.listMisters[i]) + start + increment + nextIncrement + self.params['misterIncrement'],
                            self.params['misterPosHeight']), frameon=False)
+
+            if increment == self.params['misterNearIncrement']:
+                nextIncrement = -self.params['misterNearIncrement']
+            else:
+                nextIncrement = 0
 
             ax.add_artist(ab)
 
