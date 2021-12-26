@@ -1,9 +1,8 @@
 PyQt5==5.15.2
-PyYAML>=5.4.1
-openpyxl>=3.0.7
-sip>=6.1.1
+PyYAML>=6.0
+openpyxl>=3.0.9
+sip>=6.4.0
 matplotlib>=3.4.3
-xlsxwriter>=3.0.1
 gspread>=4.0.1
 oauth2client>=4.1.3
 mplcursors>=0.4
