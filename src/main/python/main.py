@@ -4,13 +4,15 @@
 
 import sys
 import yaml
-import platform
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from AppUI import AppUI
+from ConfigApp import ConfigApp
 from PyQt5.QtCore import Qt
 from openpyxl import load_workbook
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QPalette, QColor
+from PyQt5.QtWidgets import QApplication
+
 
 __version__ = "alpha"
 __author__ = "Alvaro"
@@ -19,17 +21,12 @@ __author__ = "Alvaro"
 class App:
     """LaLigaEstadisticas App"""
 
-    def __init__(self):
+    def __init__(self, path):
         """Read clubs and launch Application"""
-        currentOs = platform.system()
-        if currentOs == 'Windows':
-            with open('C:/Users/Alvaro/Documents/Github/LaLigaEstadisticas/src/main/config/config.yaml') as f:
-                self.params = yaml.load(f, Loader=yaml.FullLoader)
-            self.params['path'] = self.params['pathWindows']
-        elif currentOs == 'Linux':
-            with open('/home/alvaro/github/LaLigaEstadisticas/src/main/config/config.yaml') as f:
-                self.params = yaml.load(f, Loader=yaml.FullLoader)
-            self.params['path'] = self.params['pathLinux']
+        with open(path) as f:
+            self.params = yaml.load(f, Loader=yaml.FullLoader)
+        path = path.replace("config/config.yaml", "")
+        self.params['path'] = path
 
         workbook = load_workbook(
             filename=self.params['path'] + self.params['databasePath']
@@ -144,7 +141,8 @@ class App:
 
 def main():
     """Is main function"""
-    App()
+    configApp = ConfigApp()
+    App(configApp.path)
 
 
 if __name__ == '__main__':
