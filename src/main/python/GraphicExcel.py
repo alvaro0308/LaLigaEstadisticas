@@ -71,6 +71,7 @@ class GraphicExcel(FigureCanvasQTAgg):
         rangePoints = [None] * self.maxGames
         gamesDelayed = []
         gamesDelayedAndPlayed = []
+        gamesAhead = []
         self.checkGames()
         rowClub = self.getRowClub()
 
@@ -93,12 +94,12 @@ class GraphicExcel(FigureCanvasQTAgg):
                     print("Error casting points to float")
 
         points = self.detectDelayedAndPlayed(
-            points, gamesDelayed, gamesDelayedAndPlayed)
+            points, gamesDelayed, gamesDelayedAndPlayed, gamesAhead)
         pointsNew = self.createLists(
             points, pointsNew, rangePoints, gamesDelayed)
 
         fig = self.createGraphic(
-            pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed)
+            pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed, gamesAhead)
 
         return fig
 
@@ -108,7 +109,7 @@ class GraphicExcel(FigureCanvasQTAgg):
             print("Games played is equal to one, can't graphic it")
             sys.exit(1)
 
-    def detectDelayedAndPlayed(self, points, gamesDelayed, gamesDelayedAndPlayed):
+    def detectDelayedAndPlayed(self, points, gamesDelayed, gamesDelayedAndPlayed, gamesAhead):
         """Detect delayed and played games"""
         for i in range(0, len(points)):
             if type(points[i]) is str and self.params['formatDelayedAndPlayed'] in points[i]:
@@ -123,11 +124,37 @@ class GraphicExcel(FigureCanvasQTAgg):
                 try:
                     pointsDelayed = float(pointsDelayed)
                     points[i] = self.APLZ
-                    gamesDelayed.append(i + 1)
-                    gamesDelayedAndPlayed.append(roundDelayed)
+
+                    self.listComments.insert(
+                        roundDelayed - 1, self.listComments[i])
+                    self.listComments[i] = self.APLZ
+                    gamesDelayedAndPlayed.append(roundDelayed - 1)
                     points.insert(roundDelayed - 1, pointsDelayed)
                 except ValueError:
                     print("Error casting points to float")
+            elif type(points[i]) is str and self.params['formatAhead'] in points[i]:
+                splitted = points[i].split(" ")
+                if "J" in splitted[1]:
+                    roundDelayed = int(splitted[1].replace('J', ''))
+                if "," in splitted[2]:
+                    pointsDelayed = splitted[2].replace(',', '.')
+                else:
+                    pointsDelayed = splitted[2]
+
+                try:
+                    pointsDelayed = float(pointsDelayed)
+                    points[i] = self.APLZ
+
+                    self.listComments.insert(
+                        roundDelayed, self.listComments[i])
+                    self.listComments[i] = self.APLZ
+                    gamesAhead.append(roundDelayed)
+                    points.insert(roundDelayed, pointsDelayed)
+                except ValueError:
+                    print("Error casting points to float")
+
+        self.listComments = [
+            i for i in self.listComments if i != self.APLZ]
 
         return [i for i in points if i != self.APLZ]
 
@@ -157,7 +184,7 @@ class GraphicExcel(FigureCanvasQTAgg):
 
         del pointsNew[lastElement + 1:len(pointsNew)]
 
-    def createGraphic(self, pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed):
+    def createGraphic(self, pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed, gamesAhead):
         """Create graphic"""
         plt.rcParams['toolbar'] = 'None'
         fig, ax = plt.subplots(figsize=(10, 2))
@@ -198,6 +225,13 @@ class GraphicExcel(FigureCanvasQTAgg):
         for j in range(0, len(gamesDelayed)):
             ax.scatter(gamesDelayed[j],
                        pointsNew[gamesDelayed[j]], color='r')
+
+        for k in range(0, len(gamesAhead)):
+            ax.scatter(gamesAhead[k],
+                       pointsNew[gamesAhead[k]], color='c')
+            ax.plot(
+                [gamesAhead[k] - 1, gamesAhead[k]],
+                [pointsNew[gamesAhead[k] - 1], pointsNew[gamesAhead[k]]], color='c')
 
         for l in range(0, len(gamesDelayedAndPlayed)):
             ax.scatter(gamesDelayedAndPlayed[l],

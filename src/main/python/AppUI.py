@@ -1,11 +1,13 @@
 """AppUI.py"""
 
 import sip
+import sys
 from functools import partial
 from PyQt5.QtGui import QPixmap
 from GraphicExcel import GraphicExcel
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from PyQt5.QtWidgets import QRadioButton, QComboBox, QWidget, QGridLayout, QMainWindow, QLabel, QPushButton
+from PyQt5 import QtCore
 import xlsxwriter
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -252,6 +254,10 @@ class AppUI(QMainWindow):
                 self._clearClubsButtons()
                 self._createClubsSmartbankButtons()
 
+    def restart(self):
+        QtCore.QCoreApplication.quit()
+        QtCore.QProcess.startDetached(sys.executable, sys.argv)
+
     def _downloadSheet(self):
         """Download Google Sheet"""
         sheet = self.client.open(self.params['nameDatabase']).sheet1
@@ -266,6 +272,7 @@ class AppUI(QMainWindow):
             worksheet.write_row(col, row, data)
 
         workbook.close()
+        self.restart()
 
     def _drawSantander(self, btnText):
         """Draw Liga Santander graphic"""
