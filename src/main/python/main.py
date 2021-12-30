@@ -33,10 +33,18 @@ class App:
             + self.params['nameDownloadedDatabase'] + self.params['extensionDatabase'])
         self.sheet = workbook.active
 
+        self.firstCol = self.params['firstColPoints']
+        self.APLZ = -10
+
         maxClubsSantander = self.params['maxClubsSantander']
         maxClubsSmartbank = self.params['maxClubsSmartbank']
         firstRowSantander = self.params['firstRowSantander']
         firstRowSmartbank = self.params['firstRowSmartbank']
+
+        maxGamesSantander = self.params['maxGamesSantander']
+        lastColSantander = self.params['lastColPointsSantander']
+        maxGamesSmartbank = self.params['maxGamesSmartbank']
+        lastColSmartbank = self.params['lastColPointsSmartbank']
 
         listClubsSantander = []
         listClubsSmartbank = []
@@ -44,6 +52,17 @@ class App:
         dictMistersSmartbank = {}
         dictCommentsSantander = {}
         dictCommentsSmartbank = {}
+        dictPointsSantander = {}
+        dictPointsSmartbank = {}
+        dictRangePointsSantander = {}
+        dictRangePointsSmartbank = {}
+        dictGamesDelayedSantander = {}
+        dictGamesDelayedSmartbank = {}
+        dictGamesDelayedAndPlayedSantander = {}
+        dictGamesDelayedAndPlayedSmartbank = {}
+        dictGamesAheadSantander = {}
+        dictGamesAheadSmartbank = {}
+
         self.readClubs(listClubsSantander, maxClubsSantander,
                        firstRowSantander)
         self.readClubs(listClubsSmartbank, maxClubsSmartbank,
@@ -60,15 +79,52 @@ class App:
         for clubSmartbank in listClubsSmartbank:
             dictCommentsSmartbank[clubSmartbank] = self.readCommentsClubs(
                 clubSmartbank)
+
+        self.readAllPointsClubs(
+            listClubsSantander, maxGamesSantander, firstRowSantander,
+            maxClubsSantander, lastColSantander, dictCommentsSantander,
+            dictPointsSantander, dictRangePointsSantander, dictGamesDelayedSantander,
+            dictGamesDelayedAndPlayedSantander, dictGamesAheadSantander)
+
+        self.readAllPointsClubs(
+            listClubsSmartbank, maxGamesSmartbank, firstRowSmartbank,
+            maxClubsSmartbank, lastColSmartbank, dictCommentsSmartbank,
+            dictPointsSmartbank, dictRangePointsSmartbank, dictGamesDelayedSmartbank,
+            dictGamesDelayedAndPlayedSmartbank, dictGamesAheadSmartbank)
+
+        dictStandingSantander = self.standing(
+            listClubsSantander, dictPointsSantander)
+        dictStandingSmartbank = self.standing(
+            listClubsSmartbank, dictPointsSmartbank)
+
+        dictStandingSantander = dict(
+            sorted(dictStandingSantander.items(), key=lambda item: item[1], reverse=True))
+        dictStandingSmartbank = dict(
+            sorted(dictStandingSmartbank.items(), key=lambda item: item[1], reverse=True))
+
         self.app = QApplication(sys.argv)
         self.darkMode()
         view = AppUI(self.sheet, listClubsSantander, listClubsSmartbank,
                      dictMistersSantander, dictMistersSmartbank,
                      dictCommentsSantander, dictCommentsSmartbank,
                      maxClubsSantander, maxClubsSmartbank,
-                     firstRowSantander, firstRowSmartbank, self.params)
+                     firstRowSantander, firstRowSmartbank, dictPointsSantander,
+                     dictPointsSmartbank, dictRangePointsSantander, dictRangePointsSmartbank,
+                     dictGamesDelayedSantander, dictGamesDelayedSmartbank, dictGamesDelayedAndPlayedSantander,
+                     dictGamesDelayedAndPlayedSmartbank, dictGamesAheadSantander, dictGamesAheadSmartbank,
+                     dictStandingSantander, dictStandingSmartbank, self.params)
         view.show()
         sys.exit(self.app.exec_())
+
+    def standing(self, listClubs, dictPoints):
+        dictStanding = {}
+        for club in listClubs:
+            for i in range(len(dictPoints[club]) - 1, 0, -1):
+                if dictPoints[club][i] != None:
+                    dictStanding[club] = dictPoints[club][i]
+                    break
+
+        return dictStanding
 
     def readClubs(self, listClubs, maxClubs, firstRow):
         """Read clubs from database"""
@@ -119,6 +175,129 @@ class App:
             currentRow += 1
 
         return listComments
+
+    def checkGames(self, maxGames):
+        """Check number of games"""
+        if maxGames == 1:
+            print("Games played is equal to one, can't graphic it")
+            sys.exit(1)
+
+    def getRowClub(self, firstRow, maxClubs, club):
+        """Get row club from Excel database"""
+        rowClub = firstRow
+        for value in self.sheet.iter_rows(min_row=firstRow,
+                                          max_row=firstRow
+                                          + maxClubs - 1,
+                                          min_col=5,
+                                          max_col=5,
+                                          values_only=True):
+            if club == value[0]:
+                return rowClub
+            rowClub += 1
+
+        return -1
+
+    def createLists(self, points, pointsNew, rangePoints, gamesDelayed, maxGames):
+        """Create lists points and range"""
+        temp = 100
+        for i in range(0, maxGames):
+            if points[i] == self.params['formatDelayed']:
+                pointsNew[i] = None
+                gamesDelayed.append(i)
+                continue
+            if points[i] == '-' or points[i] is None or (type(points[i]) is not float and type(points[i]) is not int):
+                break
+            pointsNew[i] = points[i] - 1.5 + temp
+            temp = pointsNew[i]
+        for j in range(1, maxGames + 1):
+            rangePoints[j - 1] = j
+
+        return pointsNew
+
+    def detectDelayedAndPlayed(self, points, gamesDelayedAndPlayed, gamesAhead, listComments):
+        """Detect delayed and played games"""
+        for i in range(0, len(points)):
+            if type(points[i]) is str and self.params['formatDelayedAndPlayed'] in points[i]:
+                splitted = points[i].split(" ")
+                if "J" in splitted[1]:
+                    roundDelayed = int(splitted[1].replace('J', ''))
+                if "," in splitted[2]:
+                    pointsDelayed = splitted[2].replace(',', '.')
+                else:
+                    pointsDelayed = splitted[2]
+
+                try:
+                    pointsDelayed = float(pointsDelayed)
+                    points[i] = self.APLZ
+
+                    listComments.insert(
+                        roundDelayed - 1, listComments[i])
+                    listComments[i] = self.APLZ
+                    gamesDelayedAndPlayed.append(roundDelayed - 1)
+                    points.insert(roundDelayed - 1, pointsDelayed)
+                except ValueError:
+                    print("Error casting points to float")
+            elif type(points[i]) is str and self.params['formatAhead'] in points[i]:
+                splitted = points[i].split(" ")
+                if "J" in splitted[1]:
+                    roundDelayed = int(splitted[1].replace('J', ''))
+                if "," in splitted[2]:
+                    pointsDelayed = splitted[2].replace(',', '.')
+                else:
+                    pointsDelayed = splitted[2]
+
+                try:
+                    pointsDelayed = float(pointsDelayed)
+                    points[i] = self.APLZ
+
+                    listComments.insert(
+                        roundDelayed, listComments[i])
+                    listComments[i + 1] = self.APLZ
+                    gamesAhead.append(roundDelayed)
+                    points.insert(roundDelayed, pointsDelayed)
+                except ValueError:
+                    print("Error casting points to float")
+        return [i for i in points if i != self.APLZ], [i for i in listComments if i != self.APLZ]
+
+    def readAllPointsClubs(self, listClubs, maxGames, firstRow, maxClubs, lastCol, dictComments, dictPoints, dictRangePoints, dictGamesDelayed, dictGamesDelayedAndPlayed, dictGamesAhead):
+        """Print points clubs"""
+        self.checkGames(maxGames)
+
+        for club in listClubs:
+            pointsNew = [None] * maxGames
+            rangePoints = [None] * maxGames
+            gamesDelayed = []
+            gamesDelayedAndPlayed = []
+            gamesAhead = []
+            rowClub = self.getRowClub(firstRow, maxClubs, club)
+
+            for value in self.sheet.iter_rows(min_row=rowClub, max_row=rowClub,
+                                              min_col=self.firstCol,
+                                              max_col=lastCol,
+                                              values_only=True):
+                if maxGames == 1:
+                    points = value[0]
+                else:
+                    points = value[0:maxGames]
+
+            points = list(points)
+
+            for i in range(0, len(points)):
+                if type(points[i]) is str and points[i] != '-' and not points[i].isupper():
+                    try:
+                        points[i] = float(points[i].replace(",", "."))
+                    except ValueError:
+                        print("Error casting points to float")
+
+            points, dictComments[club] = self.detectDelayedAndPlayed(
+                points, gamesDelayedAndPlayed, gamesAhead, dictComments[club])
+            pointsNew = self.createLists(
+                points, pointsNew, rangePoints, gamesDelayed, maxGames)
+            dictPoints[club] = pointsNew
+            dictRangePoints[club] = rangePoints
+            dictGamesDelayed[club] = gamesDelayed
+            dictGamesDelayedAndPlayed[club] = gamesDelayedAndPlayed
+            dictGamesAhead[club] = gamesAhead
 
     def darkMode(self):
         """Apply dark mode to Application"""

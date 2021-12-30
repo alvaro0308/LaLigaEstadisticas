@@ -3,8 +3,9 @@
 import sys
 import mplcursors
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 import matplotlib.image as mpimg
+import matplotlib.ticker as ticker
+import matplotlib.patches as mpatches
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
@@ -12,7 +13,10 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 class GraphicExcel(FigureCanvasQTAgg):
     """Create graphic getting data from Excel database"""
 
-    def __init__(self, sheet, club, maxClubs, firstRow, listMisters, listComments, params, league):
+    def __init__(self, sheet, club, maxClubs, firstRow, listMisters,
+                 listComments, params, league,  dictPoints,
+                 dictRangePoints, dictGamesDelayed,
+                 dictGamesDelayedAndPlayed, dictGamesAhead, standing):
         """Create figure"""
         self.params = params
         self.firstRow = firstRow
@@ -23,6 +27,13 @@ class GraphicExcel(FigureCanvasQTAgg):
         self.club = club
         self.maxClubs = maxClubs
         self.league = league
+        self.dictPoints = dictPoints
+        self.dictRangePoints = dictRangePoints
+        self.dictGamesDelayed = dictGamesDelayed
+        self.dictGamesDelayedAndPlayed = dictGamesDelayedAndPlayed
+        self.dictGamesAhead = dictGamesAhead
+        self.standing = standing
+
         if self.league == "Santander":
             self.maxGames = self.params['maxGamesSantander']
             self.maxXAxis = self.maxGames + 1
@@ -50,130 +61,34 @@ class GraphicExcel(FigureCanvasQTAgg):
             self.listMisters[i + 1] = path + str(self.listMisters[i + 1]) + \
                 str(self.params['extensionImage'])
 
-    def getRowClub(self):
-        """Get row club from Excel database"""
-        rowClub = self.firstRow
-        for value in self.sheet.iter_rows(min_row=self.firstRow,
-                                          max_row=self.firstRow
-                                          + self.maxClubs - 1,
-                                          min_col=5,
-                                          max_col=5,
-                                          values_only=True):
-            if self.club == value[0]:
-                return rowClub
-            rowClub += 1
-
-        return -1
-
     def printPointsClub(self):
         """Print points clubs"""
-        pointsNew = [None] * self.maxGames
-        rangePoints = [None] * self.maxGames
-        gamesDelayed = []
-        gamesDelayedAndPlayed = []
-        gamesAhead = []
-        self.checkGames()
-        rowClub = self.getRowClub()
+        gamesHome = []
+        opponents = []
 
-        for value in self.sheet.iter_rows(min_row=rowClub, max_row=rowClub,
-                                          min_col=self.firstCol,
-                                          max_col=self.lastCol,
-                                          values_only=True):
-            if self.maxGames == 1:
-                points = value[0]
-            else:
-                points = value[0:self.maxGames]
-
-        points = list(points)
-
-        for i in range(0, len(points)):
-            if type(points[i]) is str and points[i] != '-' and not points[i].isupper():
-                try:
-                    points[i] = float(points[i].replace(",", "."))
-                except ValueError:
-                    print("Error casting points to float")
-
-        points = self.detectDelayedAndPlayed(
-            points, gamesDelayed, gamesDelayedAndPlayed, gamesAhead)
-        pointsNew = self.createLists(
-            points, pointsNew, rangePoints, gamesDelayed)
+        self.detectHome(gamesHome)
+        self.detectOpponents(opponents)
 
         fig = self.createGraphic(
-            pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed, gamesAhead)
+            self.dictPoints[self.club], self.dictRangePoints[self.club], self.dictGamesDelayed[self.club], self.dictGamesDelayedAndPlayed[self.club], self.dictGamesAhead[self.club], gamesHome, opponents)
 
         return fig
 
-    def checkGames(self):
-        """Check number of games"""
-        if self.maxGames == 1:
-            print("Games played is equal to one, can't graphic it")
-            sys.exit(1)
+    def detectHome(self, gamesHome):
+        for i in range(0, len(self.listComments)):
+            splitted = self.listComments[i].split('-')
+            if self.club in splitted[0] and not "None" in splitted[1] and not "APLZ" in splitted[1]:
+                gamesHome.append(i + 1)
 
-    def detectDelayedAndPlayed(self, points, gamesDelayed, gamesDelayedAndPlayed, gamesAhead):
-        """Detect delayed and played games"""
-        for i in range(0, len(points)):
-            if type(points[i]) is str and self.params['formatDelayedAndPlayed'] in points[i]:
-                splitted = points[i].split(" ")
-                if "J" in splitted[1]:
-                    roundDelayed = int(splitted[1].replace('J', ''))
-                if "," in splitted[2]:
-                    pointsDelayed = splitted[2].replace(',', '.')
-                else:
-                    pointsDelayed = splitted[2]
-
-                try:
-                    pointsDelayed = float(pointsDelayed)
-                    points[i] = self.APLZ
-
-                    self.listComments.insert(
-                        roundDelayed - 1, self.listComments[i])
-                    self.listComments[i] = self.APLZ
-                    gamesDelayedAndPlayed.append(roundDelayed - 1)
-                    points.insert(roundDelayed - 1, pointsDelayed)
-                except ValueError:
-                    print("Error casting points to float")
-            elif type(points[i]) is str and self.params['formatAhead'] in points[i]:
-                splitted = points[i].split(" ")
-                if "J" in splitted[1]:
-                    roundDelayed = int(splitted[1].replace('J', ''))
-                if "," in splitted[2]:
-                    pointsDelayed = splitted[2].replace(',', '.')
-                else:
-                    pointsDelayed = splitted[2]
-
-                try:
-                    pointsDelayed = float(pointsDelayed)
-                    points[i] = self.APLZ
-
-                    self.listComments.insert(
-                        roundDelayed, self.listComments[i])
-                    self.listComments[i] = self.APLZ
-                    gamesAhead.append(roundDelayed)
-                    points.insert(roundDelayed, pointsDelayed)
-                except ValueError:
-                    print("Error casting points to float")
-
-        self.listComments = [
-            i for i in self.listComments if i != self.APLZ]
-
-        return [i for i in points if i != self.APLZ]
-
-    def createLists(self, points, pointsNew, rangePoints, gamesDelayed):
-        """Create lists points and range"""
-        temp = 100
-        for i in range(0, self.maxGames):
-            if points[i] == self.params['formatDelayed']:
-                pointsNew[i] = None
-                gamesDelayed.append(i)
-                continue
-            if points[i] == '-' or points[i] is None or (type(points[i]) is not float and type(points[i]) is not int):
-                break
-            pointsNew[i] = points[i] - 1.5 + temp
-            temp = pointsNew[i]
-        for j in range(1, self.maxGames + 1):
-            rangePoints[j - 1] = j
-
-        return pointsNew
+    def detectOpponents(self, opponents):
+        for i in range(0, len(self.listComments)):
+            splitted = self.listComments[i].split('-')
+            home, away = splitted[0], splitted[1].split(':')[0]
+            if not "None" in splitted[1]:
+                if not self.club in home:
+                    opponents.append("".join(home.rstrip().lstrip()))
+                elif not self.club in away:
+                    opponents.append("".join(away.rstrip().lstrip()))
 
     def deleteNotPlayed(self, pointsNew):
         """Delete not played games"""
@@ -184,7 +99,7 @@ class GraphicExcel(FigureCanvasQTAgg):
 
         del pointsNew[lastElement + 1:len(pointsNew)]
 
-    def createGraphic(self, pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed, gamesAhead):
+    def createGraphic(self, pointsNew, rangePoints, gamesDelayed, gamesDelayedAndPlayed, gamesAhead, gamesHome, opponents):
         """Create graphic"""
         plt.rcParams['toolbar'] = 'None'
         fig, ax = plt.subplots(figsize=(10, 2))
@@ -201,6 +116,22 @@ class GraphicExcel(FigureCanvasQTAgg):
         self.deleteNotPlayed(pointsNew)
 
         for i in range(0, len(pointsNew) - 1):
+            image = mpimg.imread(
+                self.params['path'] + self.params['resourcesPath'] +
+                self.params['clubsPath'] + opponents[i] + self.params['extensionImage'])
+
+            imagebox = OffsetImage(image, zoom=0.09)
+            if i % 2 == 0:
+                ab = AnnotationBbox(
+                    imagebox, (rangePoints[i] + 1,
+                               pointsNew[i + 1] + 1.2), frameon=False)
+            else:
+                ab = AnnotationBbox(
+                    imagebox, (rangePoints[i] + 1,
+                               pointsNew[i + 1] - 1.2), frameon=False)
+            ax.add_artist(ab)
+
+        for i in range(0, len(pointsNew) - 1):
             if pointsNew[i] == None:
                 aux = i
                 aux2 = i
@@ -214,6 +145,7 @@ class GraphicExcel(FigureCanvasQTAgg):
                         postElem = aux2
                         break
                     aux2 += 1
+
                 pointsNew[i] = pointsNew[prevElem]
                 linesCursor += ax.plot([prevElem, i], [pointsNew[prevElem], pointsNew[prevElem]], linestyle='--',
                                        linewidth=0.5, color='r')
@@ -221,6 +153,13 @@ class GraphicExcel(FigureCanvasQTAgg):
                     ax.plot([i, postElem], [pointsNew[i],
                                             pointsNew[postElem]], color='k')
                 ax.scatter(rangePoints[i], pointsNew[prevElem], color='r')
+
+        for m in range(0, len(gamesHome)):
+            ax.scatter(gamesHome[m],
+                       pointsNew[gamesHome[m]], c='xkcd:gunmetal')
+            ax.plot(
+                [gamesHome[m] - 1, gamesHome[m]],
+                [pointsNew[gamesHome[m] - 1], pointsNew[gamesHome[m]]], c='xkcd:gunmetal')
 
         for j in range(0, len(gamesDelayed)):
             ax.scatter(gamesDelayed[j],
@@ -241,14 +180,21 @@ class GraphicExcel(FigureCanvasQTAgg):
                 [pointsNew[gamesDelayedAndPlayed[l] - 1], pointsNew[gamesDelayedAndPlayed[l]]], color='g')
 
         ax.set_xlim(0, self.maxXAxis)
-        ax.set_ylim([self.initPoints - 15, self.initPoints + 15])
+        ax.set_ylim([self.initPoints - 17, self.initPoints + 17])
         ax.set_facecolor('xkcd:gray')
         ax.xaxis.set_major_locator(ticker.MultipleLocator(2))
         ax.yaxis.set_major_locator(ticker.MultipleLocator(2))
         ax.set_ylabel('Puntuación', fontsize=12)
         ax.set_xlabel('Jornadas', fontsize=12)
-        ax.set_title(self.club, fontsize=12)
         ax.grid(linestyle='--', linewidth=0.5)
+        ax.set_title("Clasificación: " + str(self.standing) + "º")
+
+        plt.legend(handles=[mpatches.Patch(color='black', label='Fuera'),
+                            mpatches.Patch(color='gray', label='Casa'),
+                            mpatches.Patch(color='red', label='Aplazado'),
+                            mpatches.Patch(
+                                color='green', label='Aplazado disputado'),
+                            mpatches.Patch(color='cyan', label='Adelantado')], loc='lower right', framealpha=0)
 
         for i in range(0, len(self.listMisters), 2):
             if "!!" in self.listMisters[i + 1]:
