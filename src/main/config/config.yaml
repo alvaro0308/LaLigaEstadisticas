@@ -11,6 +11,7 @@ nameDatabase: Quiniela 21-22
 nameDownloadedDatabase: database
 extensionDatabase: .xlsx
 extensionImage: .png
+folderConfiguration: /.laligaestadisticas
 
 maxClubsSantander: 20
 maxClubsSmartbank: 22
@@ -22,6 +23,7 @@ lastColPointsSantander: 46
 lastColPointsSmartbank: 48
 firstColPoints: 7
 initPoints: 100
+APLZ: -10
 
 minimumWidthWindow: 1460
 minimumHeightWindow: 960
@@ -30,7 +32,7 @@ imageHeight: 82.64
 buttonClubHeight: 140
 buttonClubWidth: 70
 
-misterPosHeight: 111
+misterPosHeight: 112
 misterPosStart: -1
 misterIncrement: 1.5
 misterNearIncrement: -3

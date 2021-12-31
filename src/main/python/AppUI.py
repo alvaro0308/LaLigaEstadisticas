@@ -1,16 +1,17 @@
 """AppUI.py"""
 
-import sip
+
 import sys
+import gspread
+# import sip
+import xlsxwriter
+from PyQt5 import QtCore
 from functools import partial
 from PyQt5.QtGui import QPixmap
 from GraphicExcel import GraphicExcel
+from oauth2client.service_account import ServiceAccountCredentials
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from PyQt5.QtWidgets import QRadioButton, QComboBox, QWidget, QGridLayout, QMainWindow, QLabel, QPushButton
-from PyQt5 import QtCore
-import xlsxwriter
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 
 
 class AppUI(QMainWindow):
@@ -19,10 +20,7 @@ class AppUI(QMainWindow):
     def __init__(self, sheet, listClubsSantander, listClubsSmartbank,
                  dictMistersSantander, dictMistersSmartbank, dictCommentsSantander,
                  dictCommentsSmartbank, maxClubsSantander, maxClubsSmartbank,
-                 firstRowSantander, firstRowSmartbank, dictPointsSantander,
-                 dictPointsSmartbank, dictRangePointsSantander, dictRangePointsSmartbank,
-                 dictGamesDelayedSantander, dictGamesDelayedSmartbank, dictGamesDelayedAndPlayedSantander,
-                 dictGamesDelayedAndPlayedSmartbank, dictGamesAheadSantander, dictGamesAheadSmartbank,
+                 firstRowSantander, firstRowSmartbank,
                  dictStandingSantander, dictStandingSmartbank, params):
         """"""
         super().__init__()
@@ -47,16 +45,6 @@ class AppUI(QMainWindow):
         self.maxClubsSmartbank = maxClubsSmartbank
         self.firstRowSantander = firstRowSantander
         self.firstRowSmartbank = firstRowSmartbank
-        self.dictPointsSantander = dictPointsSantander
-        self.dictPointsSmartbank = dictPointsSmartbank
-        self.dictRangePointsSantander = dictRangePointsSantander
-        self.dictRangePointsSmartbank = dictRangePointsSmartbank
-        self.dictGamesDelayedSantander = dictGamesDelayedSantander
-        self.dictGamesDelayedSmartbank = dictGamesDelayedSmartbank
-        self.dictGamesDelayedAndPlayedSantander = dictGamesDelayedAndPlayedSantander
-        self.dictGamesDelayedAndPlayedSmartbank = dictGamesDelayedAndPlayedSmartbank
-        self.dictGamesAheadSantander = dictGamesAheadSantander
-        self.dictGamesAheadSmartbank = dictGamesAheadSmartbank
         self.dictStandingSantander = dictStandingSantander
         self.dictStandingSmartbank = dictStandingSmartbank
 
@@ -266,11 +254,9 @@ class AppUI(QMainWindow):
             self._clearClubsButtons()
         else:
             if self._championshipMenu.currentText() == "Liga Santander":
-                print("Standing: " + str(self.dictStandingSantander))
                 self._clearClubsButtons()
                 self._createClubsSantanderButtons()
             elif self._championshipMenu.currentText() == "Liga Smartbank":
-                print("Standing: " + str(self.dictStandingSmartbank))
                 self._clearClubsButtons()
                 self._createClubsSmartbankButtons()
 
@@ -297,13 +283,10 @@ class AppUI(QMainWindow):
     def _drawSantander(self, btnText):
         """Draw Liga Santander graphic"""
         standing = list(self.dictStandingSantander.keys()).index(btnText) + 1
-
         graphic = GraphicExcel(self.sheet, btnText,
                                self.maxClubsSantander, self.firstRowSantander,
                                self.dictMistersSantander[btnText], self.dictCommentsSantander[btnText],
-                               self.params, "Santander", self.dictPointsSantander, self.dictRangePointsSantander,
-                               self.dictGamesDelayedSantander, self.dictGamesDelayedAndPlayedSantander,
-                               self.dictGamesAheadSantander, standing)
+                               self.params, "Santander", standing)
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
@@ -311,13 +294,10 @@ class AppUI(QMainWindow):
     def _drawSmartbank(self, btnText):
         """Draw Liga Smartbank graphic"""
         standing = list(self.dictStandingSmartbank.keys()).index(btnText) + 1
-
         graphic = GraphicExcel(self.sheet, btnText,
                                self.maxClubsSmartbank, self.firstRowSmartbank,
                                self.dictMistersSmartbank[btnText], self.dictCommentsSmartbank[btnText],
-                               self.params, "Smartbank", self.dictPointsSmartbank, self.dictRangePointsSmartbank,
-                               self.dictGamesDelayedSmartbank,  self.dictGamesDelayedAndPlayedSmartbank,
-                               self.dictGamesAheadSmartbank, standing)
+                               self.params, "Smartbank",  standing)
         toolbar = NavigationToolbar(graphic, self)
         self.layout.addWidget(toolbar, 0, 1)
         self.layout.addWidget(graphic, 1, 1)
