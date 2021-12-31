@@ -1,5 +1,5 @@
 PyQt5==5.15.2
-PySide2>=5.15.2
+PySide2==5.15.2
 PyYAML==6.0
 openpyxl==3.0.9
 sip==6.4.0
