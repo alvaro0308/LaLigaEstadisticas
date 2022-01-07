@@ -3,7 +3,7 @@
 
 import sys
 import gspread
-# import sip
+from PyQt5 import sip
 import xlsxwriter
 from PyQt5 import QtCore
 from functools import partial

@@ -229,22 +229,6 @@ class GraphicExcel(FigureCanvasQTAgg):
         self.deleteNotPlayed(pointsNew)
 
         for i in range(0, len(pointsNew) - 1):
-            image = mpimg.imread(
-                self.params['path'] + self.params['resourcesPath'] +
-                self.params['clubsPath'] + opponents[i] + self.params['extensionImage'])
-
-            imagebox = OffsetImage(image, zoom=0.1)
-            if i % 2 == 0:
-                ab = AnnotationBbox(
-                    imagebox, (rangePoints[i] + 1,
-                               pointsNew[i + 1] + 2), frameon=False)
-            else:
-                ab = AnnotationBbox(
-                    imagebox, (rangePoints[i] + 1,
-                               pointsNew[i + 1] - 2), frameon=False)
-            ax.add_artist(ab)
-
-        for i in range(0, len(pointsNew) - 1):
             if pointsNew[i] == None:
                 aux = i
                 aux2 = i
@@ -260,12 +244,28 @@ class GraphicExcel(FigureCanvasQTAgg):
                     aux2 += 1
 
                 pointsNew[i] = pointsNew[prevElem]
-                linesCursor += ax.plot([prevElem, i], [pointsNew[prevElem], pointsNew[prevElem]], linestyle='--',
+                linesCursor += ax.plot([prevElem, i], [pointsNew[prevElem], pointsNew[prevElem]],
                                        linewidth=0.5, color='r')
                 if pointsNew[i + 1] != None:
                     ax.plot([i, postElem], [pointsNew[i],
                                             pointsNew[postElem]], color='k')
                 ax.scatter(rangePoints[i], pointsNew[prevElem], color='r')
+
+        for i in range(0, len(pointsNew) - 1):
+            image = mpimg.imread(
+                self.params['path'] + self.params['resourcesPath'] +
+                self.params['clubsPath'] + opponents[i] + self.params['extensionImage'])
+
+            imagebox = OffsetImage(image, zoom=0.1)
+            if i % 2 == 0:
+                ab = AnnotationBbox(
+                    imagebox, (rangePoints[i] + 1,
+                               pointsNew[i + 1] + 2), frameon=False)
+            else:
+                ab = AnnotationBbox(
+                    imagebox, (rangePoints[i] + 1,
+                               pointsNew[i + 1] - 2), frameon=False)
+            ax.add_artist(ab)
 
         for m in range(0, len(gamesHome)):
             ax.scatter(gamesHome[m],
