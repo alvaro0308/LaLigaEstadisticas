@@ -40,7 +40,7 @@ class GraphicExcel(FigureCanvasQTAgg):
             self.listMisters[i] = self.listMisters[i].replace(":", "")
             self.listMisters[i] = self.listMisters[i].replace(",", "")
         self.getPathsMisters()
-        self.listComments = listComments
+        self.listComments = listComments.copy()
 
         fig = self.printPointsClub()
         super(GraphicExcel, self).__init__(fig)
@@ -157,7 +157,7 @@ class GraphicExcel(FigureCanvasQTAgg):
 
                     self.listComments.insert(
                         roundDelayed, self.listComments[i])
-                    self.listComments[i] = self.params['APLZ']
+                    self.listComments[i + 1] = self.params['APLZ']
                     gamesAhead.append(roundDelayed)
                     points.insert(roundDelayed, pointsDelayed)
                 except ValueError:
