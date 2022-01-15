@@ -114,10 +114,11 @@ class App:
                                          max_row=maxClubs + firstRow - 1,
                                          min_col=col, max_col=col,
                                          values_only=True):
-            points = cell[0].replace(',', '.')
             try:
+                points = cell[0].replace(',', '.')
                 dictStandings[listClubs[index]] = float(points)
             except Exception as exception:
+                points = []
                 print("Exception: {} points: {} ".format(
                     exception, points))
             index += 1
