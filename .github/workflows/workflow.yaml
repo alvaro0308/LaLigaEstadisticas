@@ -30,4 +30,5 @@ jobs:
         run: |
           export LANG=es_ES.utf-8
           export DISPLAY=:0
+          export QT_DEBUG_PLUGINS=1
           /opt/LaLigaEstadisticas/LaLigaEstadisticas
