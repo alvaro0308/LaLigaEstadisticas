@@ -21,7 +21,7 @@ jobs:
           pip3 install --ignore-installed -r requirements.txt
           sed -i '22,26d' $HOME/.local/lib/python3.8/site-packages/fbs/__init__.py
           sudo apt install ruby ruby-dev rubygems build-essential
-          gem install --no-document --no-rdoc fpm
+          gem install --no-document fpm
       - name: Create installer
         run: |
           export LANG=es_ES.utf-8
