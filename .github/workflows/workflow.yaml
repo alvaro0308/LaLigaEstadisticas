@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - master
-      
+
 jobs:
   build-and-test:
     runs-on: ${{ matrix.os }}
@@ -19,9 +19,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip3 install --ignore-installed -r requirements.txt
-      - name: Compile
+          sed -i '22,26d' $HOME/.local/lib/python3.8/site-packages/fbs/__init__.py
+      - name: Create installer
         run: |
           export LANG=es_ES.utf-8
-          sed -i '22,26d' $HOME/.local/lib/python3.8/site-packages/fbs/__init__.py
           fbs run
-          
+          fbs freeze
+          fbs installer
+          sudo dpkg -i target/LaLigaEstadisticas.deb
