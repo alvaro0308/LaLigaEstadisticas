@@ -1,5 +1,8 @@
 # LaLigaEstadisticas
 
+[![GitHub Action 
+Status](https://github.com/alvaro0308/LaLigaEstadisticas/actions/workflows/workflow.yaml/badge.svg)](https://github.com/alvaro0308/)
+
 ### Instructions to generate .deb:
 fbs run
 
