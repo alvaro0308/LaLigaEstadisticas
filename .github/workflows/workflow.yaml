@@ -19,13 +19,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip3 install --ignore-installed -r requirements.txt
-          pip3 install --ignore-installed pytest coverage pytest-qt
-          sudo apt install xvfb x11-utils libxkbcommon-x11-0
       - name: Compile
         run: |
-          wget https://github.com/alvaro0308/LaLigaEstadisticas/releases/download/v0.0.2-alpha/LaLigaEstadisticas.deb
+          wget -q https://github.com/alvaro0308/LaLigaEstadisticas/releases/download/v0.0.2-alpha/LaLigaEstadisticas.deb
           sudo dpkg -i LaLigaEstadisticas.deb
       - name: Test
         run: |
           export LANG=es_ES.utf-8
-          /opt/LaLigaEstadisticas/LaLigaEstadisticas
+          fbs run
