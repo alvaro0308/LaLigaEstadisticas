@@ -27,4 +27,5 @@ jobs:
       - name: Test
         run: |
           export LANG=es_ES.utf-8
+          export DISPLAY=:0
           /opt/LaLigaEstadisticas/LaLigaEstadisticas
