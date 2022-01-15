@@ -26,4 +26,5 @@ jobs:
       - name: Test
         run: |
           export LANG=es_ES.utf-8
+          cat $HOME/.local/lib/python3.8/site-packages/fbs/__init__.py
           fbs run
