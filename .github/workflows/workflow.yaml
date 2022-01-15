@@ -20,8 +20,7 @@ jobs:
         run: |
           pip3 install PyQt5==5.15.2
           pip3 install --ignore-installed -r requirements.txt
-          sudo apt install libxcb-xinerama0
-          sudo apt install libxkbcommon-x11-0
+          sudo apt install libxcb-xinerama0 libxkbcommon-x11-0 install pyqt5-dev-tools xvfb x11-utils libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0
       - name: Compile
         run: |
           wget https://github.com/alvaro0308/LaLigaEstadisticas/releases/download/v0.0.2-alpha/LaLigaEstadisticas.deb
@@ -30,5 +29,4 @@ jobs:
         run: |
           export LANG=es_ES.utf-8
           export DISPLAY=:0
-          export QT_DEBUG_PLUGINS=1
           /opt/LaLigaEstadisticas/LaLigaEstadisticas
