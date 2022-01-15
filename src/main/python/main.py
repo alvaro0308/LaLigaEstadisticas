@@ -10,9 +10,8 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from ConfigApp import ConfigApp
 from openpyxl import load_workbook
-from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
 
@@ -77,6 +76,14 @@ class App:
             sorted(dictStandingSmartbank.items(), key=lambda item: item[1], reverse=True))
 
         self.app = QApplication(sys.argv)
+        # msg = QMessageBox()
+        # msg.setIcon(QMessageBox.Critical)
+        # msg.setText("Error")
+        # msg.setInformativeText(
+        #    'IndexError: list index out of range club gamesHome')
+        # msg.setWindowTitle("Error")
+        # msg.exec_()
+
         os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
         os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
         self.app.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
@@ -108,7 +115,11 @@ class App:
                                          min_col=col, max_col=col,
                                          values_only=True):
             points = cell[0].replace(',', '.')
-            dictStandings[listClubs[index]] = float(points)
+            try:
+                dictStandings[listClubs[index]] = float(points)
+            except Exception as exception:
+                print("Exception: {} points: {} ".format(
+                    exception, points))
             index += 1
 
     def readMisters(self, dictMisters, maxClubs, firstRow):

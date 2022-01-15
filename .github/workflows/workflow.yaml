@@ -1,0 +1,22 @@
+name: LaLigaEstadisticas
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      
+jobs:
+  build-and-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+      fail-fast: false
+    steps:
+      - name: Install dependencies
+        run: pip3 install PyQt5==5.15.2
+      - name: Compile and test
+        run: |
+          wget https://github.com/alvaro0308/LaLigaEstadisticas/releases/download/v0.0.2-alpha/LaLigaEstadisticas.deb
+          sudo dpkg -i LaLigaEstadisticas.deb

@@ -268,11 +268,15 @@ class GraphicExcel(FigureCanvasQTAgg):
             ax.add_artist(ab)
 
         for m in range(0, len(gamesHome)):
-            ax.scatter(gamesHome[m],
-                       pointsNew[gamesHome[m]], c='xkcd:gunmetal')
-            ax.plot(
-                [gamesHome[m] - 1, gamesHome[m]],
-                [pointsNew[gamesHome[m] - 1], pointsNew[gamesHome[m]]], c='xkcd:gunmetal')
+            try:
+                ax.scatter(gamesHome[m],
+                           pointsNew[gamesHome[m]], c='xkcd:gunmetal')
+                ax.plot(
+                    [gamesHome[m] - 1, gamesHome[m]],
+                    [pointsNew[gamesHome[m] - 1], pointsNew[gamesHome[m]]], c='xkcd:gunmetal')
+            except Exception as exception:
+                print("Exception: {} club: {} gamesHome: {} ".format(
+                    exception, self.club, gamesHome[m]))
 
         for j in range(0, len(gamesDelayed)):
             ax.scatter(gamesDelayed[j],
