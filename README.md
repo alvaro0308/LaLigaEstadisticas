@@ -10,29 +10,29 @@ sudo apt install ruby ruby-dev rubygems build-essential
 sudo gem install --no-document fpm
 ```
 
-### Instructions to test:
+### Test:
 ```
 fbs run
 ```
 
-### Instructions to create installer (.deb, .exe or .dmg):
+### Creating installer .deb, .exe or .dmg (It can be downloaded from Releases):
 ```
 fbs freeze
 fbs installer
-```
+``` 
 
-### Instructions to install .deb:
+### Installing .deb:
 ```
 sudo dpkg -i target/LaLigaEstadisticas.deb
 ```
 
-### Instructions to install .exe:
+### Installing .exe:
 
 Open target/LaLigaEstadisticasSetup.exe
-
 
 ## Keys path to database access
 
 keys: keys/keys.json
 
+# Example
 ![](https://github.com/alvaro0308/LaLigaEstadisticas/blob/master/src/main/resources/gif.gif)
