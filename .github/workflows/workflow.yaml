@@ -21,10 +21,7 @@ jobs:
           pip3 install --ignore-installed -r requirements.txt
       - name: Compile
         run: |
-          wget -q https://github.com/alvaro0308/LaLigaEstadisticas/releases/download/v0.0.2-alpha/LaLigaEstadisticas.deb
-          sudo dpkg -i LaLigaEstadisticas.deb
-      - name: Test
-        run: |
           export LANG=es_ES.utf-8
-          sed -e '22,26d' $HOME/.local/lib/python3.8/site-packages/fbs/__init__.py
+          sed -i '22,26d' $HOME/.local/lib/python3.8/site-packages/fbs/__init__.py
           fbs run
+          
