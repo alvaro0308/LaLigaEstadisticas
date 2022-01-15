@@ -8,7 +8,10 @@ Status](https://github.com/alvaro0308/LaLigaEstadisticas/actions/workflows/workf
 pip3 install --ignore-installed -r requirements.txt 
 sudo apt install ruby ruby-dev rubygems build-essential
 sudo gem install --no-document fpm
+Install 
 ```
+
+On Windows, install [NSIS](http://nsis.sourceforge.net/Main_Page) and add it to your `PATH` environment variable.
 
 ### Test:
 ```
