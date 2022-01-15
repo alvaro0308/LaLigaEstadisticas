@@ -30,9 +30,9 @@ sudo dpkg -i target/LaLigaEstadisticas.deb
 
 Open target/LaLigaEstadisticasSetup.exe
 
-## Keys path to database access
+### Keys path to database access
 
-keys: keys/keys.json
+keys/keys.json
 
-# Example
+### Example
 ![](https://github.com/alvaro0308/LaLigaEstadisticas/blob/master/src/main/resources/gif.gif)
