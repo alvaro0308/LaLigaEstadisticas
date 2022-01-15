@@ -20,3 +20,5 @@ jobs:
         run: |
           wget https://github.com/alvaro0308/LaLigaEstadisticas/releases/download/v0.0.2-alpha/LaLigaEstadisticas.deb
           sudo dpkg -i LaLigaEstadisticas.deb
+          export LANG=es_ES.utf-8
+          /opt/LaLigaEstadisticas/LaLigaEstadisticas
